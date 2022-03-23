@@ -8,6 +8,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "objloader.h"
+#include "texture.h"
+
 
 #include "glsl.h"
 
@@ -32,6 +34,8 @@ unsigned const int DELTA_TIME = 10;
 
 // ID's
 GLuint program_id;
+GLuint texture_id;
+
 GLuint vao;
 
 // Uniform ID's
@@ -118,6 +122,8 @@ void Render()
 
     glBindVertexArray(0);
 
+    glBindTexture(GL_TEXTURE_2D, texture_id);
+
     glutSwapBuffers();
 }
 
@@ -189,6 +195,7 @@ void InitMatrices()
 }
 
 void InitLoadObjects() {
+    texture_id = loadBMP("Textures/Yellobrk.bmp");
     bool res = loadOBJ("teapot.obj", vertices, uvs, normals);
 }
 
@@ -200,8 +207,8 @@ void InitLoadObjects() {
 
 void InitBuffers()
 {
-    GLuint position_id, normal_id;
-    GLuint vbo_vertices, vbo_normals;
+    GLuint position_id, normal_id, uv_id;
+    GLuint vbo_vertices, vbo_normals, vbo_uvs;
     GLuint ibo_elements;
 
 
@@ -222,6 +229,14 @@ void InitBuffers()
         &normals[0], GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+    // vbo for uvs
+    glGenBuffers(1, &vbo_uvs);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_uvs);
+    glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2),
+        &uvs[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+
     GLuint uniform_specular = glGetUniformLocation(
         program_id, "mat_specular");
     GLuint uniform_material_power = glGetUniformLocation(
@@ -231,6 +246,7 @@ void InitBuffers()
     // Get vertex attributes
     position_id = glGetAttribLocation(program_id, "position");
     normal_id = glGetAttribLocation(program_id, "normal");
+     uv_id = glGetAttribLocation(program_id, "uv");
 
     // Allocate memory for vao
     glGenVertexArrays(1, &vao);
@@ -250,6 +266,11 @@ void InitBuffers()
     glEnableVertexAttribArray(normal_id);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+    // Bind to vao
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_uvs);
+    glVertexAttribPointer(uv_id, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(uv_id);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // Stop bind to vao
     glBindVertexArray(0);
