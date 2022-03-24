@@ -47,8 +47,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="fragmentshader.fsh" />
-    <None Include="..\..\..\..\..\..\..\Desktop\fragmentshader.frag" />
-    <None Include="..\..\..\..\..\..\..\Desktop\vertexshader.vert" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="vertexshader.vsh" />

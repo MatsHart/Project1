@@ -10,8 +10,6 @@ in VS_OUT
 
 in vec2 UV;
 
-in vec3 textureDir; // direction vector representing a 3D texture coordinate
-uniform samplerCube cubemap; // cubemap texture sampler
 
 // Material properties
 uniform vec3 mat_ambient;
@@ -22,7 +20,6 @@ uniform sampler2D texsampler;
 
 void main()
 {
-    FragColor = texture(cubemap, textureDir);
     // Normalize the incoming N, L and V vectors
     vec3 N = normalize(fs_in.N);
     vec3 L = normalize(fs_in.L);

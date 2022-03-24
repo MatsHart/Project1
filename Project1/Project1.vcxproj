@@ -146,8 +146,6 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\..\..\..\Desktop\fragmentshader.frag" />
-    <None Include="..\..\..\..\..\..\..\Desktop\vertexshader.vert" />
     <None Include="fragmentshader.fsh" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
