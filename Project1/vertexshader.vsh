@@ -31,7 +31,7 @@ void main()
     vs_out.L = light_pos - P.xyz;
 
     // Calculate view vector;
-    vs_out.V = -P.xyz;
+   vs_out.V = -P.xyz;
 
     // Calculate the clip-space position of each vertex
     gl_Position = projection * P;
