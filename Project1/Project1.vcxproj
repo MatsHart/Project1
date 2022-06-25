@@ -131,6 +131,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="glsl.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Object.cpp" />
     <ClCompile Include="objloader.cpp" />
     <ClCompile Include="texture.cpp" />
   </ItemGroup>
@@ -138,6 +139,7 @@
     <ClInclude Include="..\..\..\..\..\..\..\Desktop\objloader.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="glsl.h" />
+    <ClInclude Include="Object.h" />
     <ClInclude Include="texture.h" />
   </ItemGroup>
   <ItemGroup>
