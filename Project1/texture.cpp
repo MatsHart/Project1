@@ -5,7 +5,7 @@
 #include <GL/glew.h>
 
 
-GLuint loadBMP(const char * imagepath) {
+GLuint loadBMP(const char* imagepath) {
 
     printf("Reading image %s\n", imagepath);
 
@@ -15,10 +15,10 @@ GLuint loadBMP(const char * imagepath) {
     unsigned int imageSize;
     unsigned int width, height;
     // Actual RGB data
-    unsigned char * data;
+    unsigned char* data;
 
     // Open the file
-    FILE * file = fopen(imagepath, "rb");
+    FILE* file = fopen(imagepath, "rb");
     if (!file) { printf("%s could not be opened. Are you in the right directory ? Don't forget to read the FAQ !\n", imagepath); getchar(); return 0; }
 
     // Read the header, i.e. the 54 first bytes
@@ -44,7 +44,7 @@ GLuint loadBMP(const char * imagepath) {
     height = *(int*)&(header[0x16]);
 
     // Some BMP files are misformatted, guess missing information
-    if (imageSize == 0)    imageSize = width*height * 3; // 3 : one byte for each Red, Green and Blue component
+    if (imageSize == 0)    imageSize = width * height * 3; // 3 : one byte for each Red, Green and Blue component
     if (dataPos == 0)      dataPos = 54; // The BMP header is done that way
 
     // Create a buffer
@@ -107,11 +107,11 @@ GLuint loadBMP(const char * imagepath) {
 #define FOURCC_DXT3 0x33545844 // Equivalent to "DXT3" in ASCII
 #define FOURCC_DXT5 0x35545844 // Equivalent to "DXT5" in ASCII
 
-GLuint loadDDS(const char * imagepath) {
+GLuint loadDDS(const char* imagepath) {
 
     unsigned char header[124];
 
-    FILE *fp;
+    FILE* fp;
 
     /* try to open the file */
     fp = fopen(imagepath, "rb");
@@ -138,7 +138,7 @@ GLuint loadDDS(const char * imagepath) {
     unsigned int fourCC = *(unsigned int*)&(header[80]);
 
 
-    unsigned char * buffer;
+    unsigned char* buffer;
     unsigned int bufsize;
     /* how big is it going to be including all mipmaps? */
     bufsize = mipMapCount > 1 ? linearSize * 2 : linearSize;
@@ -179,7 +179,7 @@ GLuint loadDDS(const char * imagepath) {
     /* load the mipmaps */
     for (unsigned int level = 0; level < mipMapCount && (width || height); ++level)
     {
-        unsigned int size = ((width + 3) / 4)*((height + 3) / 4)*blockSize;
+        unsigned int size = ((width + 3) / 4) * ((height + 3) / 4) * blockSize;
         glCompressedTexImage2D(GL_TEXTURE_2D, level, format, width, height,
             0, size, buffer + offset);
 
