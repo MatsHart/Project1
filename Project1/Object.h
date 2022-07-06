@@ -21,6 +21,8 @@ struct Material {
 class Object
 {
 public:
+	const char* filePath;
+	const char* bmpPath;
 	Material material = Material();
 	vector<glm::vec3> normals;
 	vector<glm::vec3> vertices;
@@ -30,13 +32,15 @@ public:
 	GLuint texture_id;
 	GLuint vao;
 
-	Object() {
+	Object();
 
-	}
+	Object(const char*, const char*, glm::vec3, glm::vec3);
 
 	~Object() {
 	
 	}
+
+	void Animate(float speed, glm::mat4);
 
 };
 

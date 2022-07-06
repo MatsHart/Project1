@@ -129,6 +129,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Car.cpp" />
     <ClCompile Include="glsl.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object.cpp" />
@@ -138,6 +139,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\..\..\Desktop\objloader.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Car.h" />
     <ClInclude Include="glsl.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="texture.h" />
