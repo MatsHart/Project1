@@ -35,10 +35,9 @@ public:
 	Object();
 
 	Object(const char*, const char*, glm::vec3, glm::vec3);
+	Object(const char* filePath2, glm::vec3 scale, glm::vec3 translate);
 
-	~Object() {
-	
-	}
+	~Object() {}
 
 	void Animate(float speed, glm::mat4);
 

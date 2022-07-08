@@ -1,8 +1,8 @@
 #include "Car.h"
 
 
-Car::Car() {
-
-	Car::body;
-
-}
+//Car::Car() {
+//
+//	//Car::body;
+//
+//}

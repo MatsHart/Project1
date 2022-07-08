@@ -62,6 +62,8 @@ vector<Object> objectList;
 
 Object objects[2];
 
+bool firstInitMatric = true;
+
 //vector<Camera> cameras;
 Camera cameras[2];
 
@@ -80,8 +82,7 @@ void InitCameras() {
 
 	//cameras.push_back(Camera(view, projection, WIDTH, HEIGHT));
 	cameras[0] = (Camera(view, projection));
-	//cameras.push_back(Camera(5));
-	cameras[1] = Camera();
+	cameras[1] = Camera(WIDTH, HEIGHT);
 }
 //--------------------------------------------------------------------------------
 // Mesh variables
@@ -99,12 +100,13 @@ void InitCameras() {
 //--------------------------------------------------------------------------------
 
 void Render() {
+	cameras[ActiveCameraInterval].Update();
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Do transformation
-	//objects[0].model = glm::rotate(objects[0].model, 0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
-	//objects[1].model = glm::rotate(objects[1].model, 0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
+	objects[0].model = glm::rotate(objects[0].model, 0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
+	objects[1].model = glm::rotate(objects[1].model, 0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
 
 	// Attach to program_id
 	glUseProgram(program_id);
@@ -134,7 +136,9 @@ void createObjects() {
 	objectList.push_back(Object());
 	//objects[0] = Object("Objects/car.obj", "Textures/Yellobrk.bmp", glm::vec3(1, 1, 1) , glm::vec3(-4.0, -0.25, -3.0));
 	//objects[1] = Object("Objects/torus.obj", "Textures/uvtemplate.bmp", glm::vec3(1, 1, 1), glm::vec3(-4.0, -0.25, -2.0));
+
 	objects[0] = Object("Objects/carNoTires.obj", "Textures/Yellobrk.bmp", glm::vec3(0.0, -1.0, -3.0), glm::vec3(2.5, 2.5, 2.5));
+
 	objects[1] = Object("Objects/Tire.obj", "Textures/Yellobrk.bmp", glm::vec3(0.0, 3.0, -3.0), glm::vec3(2.5, 1.5, 2.5));
 }
 
@@ -148,11 +152,20 @@ void Render(int n) {
 	glutTimerFunc(DELTA_TIME, Render, 0);
 }
 
+//  Only empty the model mat4 on first run
+void createEmptyMat4(int i) {
+	objects[i].model = glm::mat4();
+}
 
 void InitMatrices(int i) {
-	objects[i].model = glm::mat4();
+// Prevents the animation from stopping
+	if (firstInitMatric)
+		createEmptyMat4(i);
+
 	objects[i].mv = cameras[ActiveCameraInterval].view * objects[i].model * cameras[ActiveCameraInterval].projection;
 }
+
+
 void InitMatrices() {
 
 	cameras[ActiveCameraInterval].Update();
@@ -160,6 +173,7 @@ void InitMatrices() {
 	for (int i = 0; i < sizeof(objects) / sizeof(*objects); i++) {
 		InitMatrices(i);
 	}
+	firstInitMatric = false;
 }
 
 //------------------------------------------------------------
@@ -332,6 +346,14 @@ void keyboardHandler(unsigned char key, int a, int b) {
 // Initializes Glut and Glew
 //------------------------------------------------------------
 
+void mouseHandler(int mx, int my) {
+	cameras[ActiveCameraInterval].mouseMovemnt(mx, my);
+	InitMatrices();
+	InitBuffers();
+	Render();
+	//std::cout << "x" << mx << ", y" << my << std::endl;
+}
+
 void InitGlutGlew(int argc, char** argv) {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
@@ -339,6 +361,7 @@ void InitGlutGlew(int argc, char** argv) {
 	glutCreateWindow("Hello OpenGL");
 	glutDisplayFunc(Render);
 	glutKeyboardFunc(keyboardHandler);
+	glutMotionFunc(mouseHandler);
 	glutTimerFunc(DELTA_TIME, Render, 0);
 
 	glewInit();
@@ -362,8 +385,10 @@ void InitShaders() {
 
 void InitObjects() {
 	for (int i = 0; i < 2; i++) {
-		bool res = loadOBJ(objects[i].filePath, objects[i].vertices, objects[i].uvs, objects[i].normals);
-		objects[i].texture_id = loadBMP(objects[i].bmpPath);
+		if (objects[i].filePath != nullptr)
+			bool res = loadOBJ(objects[i].filePath, objects[i].vertices, objects[i].uvs, objects[i].normals);
+		if (objects[i].bmpPath != nullptr)
+			objects[i].texture_id = loadBMP(objects[i].bmpPath);
 	}
 }
 
@@ -408,6 +433,8 @@ void InitLight() {
 	objects[1].material.specular = glm::vec3(0.7, 0.7, 0.7);
 	objects[1].material.power = 1024.0f;
 }
+
+
 
 
 

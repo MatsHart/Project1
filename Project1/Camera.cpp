@@ -1,123 +1,127 @@
 #include "Camera.h"
 
-Camera::Camera() {
-    std::cout << "test2" << std::endl;
-    view = glm::lookAt(
-        glm::vec3(0.0, 1.0, 8.0),  // eye
-        glm::vec3(0.0, 0.5, 0.0),  // center
-        glm::vec3(0.0, 1.0, 0.0));  // up
-
-    projection = glm::perspective(
-        glm::radians(65.0f),
-        1.0f * 800 / 600, 0.1f,
-        20.0f);
-
-    rotateX = 0.5;
-    translateY = -1.5f;
-    //translateY = 0.5f;
-    //translateZ = -4.5f;
+Camera::Camera() : Camera::Camera(800,600){
+	rotateX = 0.5;
+	translateY = -1.5f;
 }
-
 
 Camera::Camera(const int WIDTH, const int HEIGHT) {
-    std::cout << "test2" << std::endl;
-    view = glm::lookAt(
-        glm::vec3(0.0, 1.0, 8.0),  // eye
-        glm::vec3(0.0, 0.5, 0.0),  // center
-        glm::vec3(0.0, 1.0, 0.0));  // up
+	standardView = glm::lookAt(
+		glm::vec3(0.0, 1.0, 8.0),  // eye
+		glm::vec3(0.0, 0.5, 0.0),  // center
+		glm::vec3(0.0, 1.0, 0.0));  // up
 
-    projection = glm::perspective(
-        glm::radians(45.0f),
-        1.0f * WIDTH / HEIGHT, 0.1f,
-        20.0f);
+	standardProjection = glm::perspective(
+		glm::radians(45.0f),
+		1.0f * WIDTH / HEIGHT, 0.1f,
+		20.0f);
 }
+
 Camera::Camera(glm::mat4 view, glm::mat4 projection) {
-    this->view = view;
-    this->projection = projection;
+	this->standardView = view;
+	this->standardProjection = projection;
 }
 
+// Move player forward based upon the rotation sin is used for x and cos for z movement
 void Camera::Forward() {
-    if (rotateY > 0.79f && rotateY < 2.37f)
-        translateX -= 0.1f;
-    else if (rotateY > 2.37f && rotateY < 3.94f)
-        translateZ -= 0.1f;
-    else if (rotateY > 3.94f && rotateY < 5.52f)
-        translateX += 0.1f;
-    else
-        translateZ += 0.1f;
+	translateX += -sin(rotateY) * speed;
+	translateZ += cos(rotateY) * speed;
 }
+// Move player backwards based upon the rotation sin is used for x and cos for z movement
 void Camera::Backwards() {
-    if (rotateY > 0.79f && rotateY < 2.37f)
-        translateX += 0.1f;
-    else if (rotateY > 2.37f && rotateY < 3.94f)
-        translateZ += 0.1f;
-    else if (rotateY > 3.94f && rotateY < 5.52f)
-        translateX -= 0.1f;
-    else
-        translateZ -= 0.1f;
+	translateX -= -sin(rotateY) * speed;
+	translateZ -= cos(rotateY) * speed;
 }
+// Move player left based upon the rotation sin is used for x and cos for z movement
+// remove 1.55 from the rotateY, because quarter rotation
 void Camera::Left() {
-    if (rotateY > 0.79f && rotateY < 2.37f)
-        translateZ += 0.1f;
-    else if (rotateY > 2.37f && rotateY < 3.94f)
-        translateX -= 0.1f;
-    else if (rotateY > 3.94f && rotateY < 5.52f)
-        translateZ -= 0.1f;
-    else
-        translateX += 0.1f;
+	translateX += -sin(rotateY - 1.55) * speed;
+	translateZ += cos(rotateY - 1.55) * speed;
 }
+// Move player right based upon the rotation sin is used for x and cos for z movement
+// remove 1.55 from the rotateY, because quarter rotation
 void Camera::Right() {
-    if (rotateY > 0.79f && rotateY < 2.37f)
-        translateZ -= 0.1f;
-    else if (rotateY > 2.37f && rotateY < 3.94f)
-        translateX += 0.1f;
-    else if (rotateY > 3.94f && rotateY < 5.52f)
-        translateZ += 0.1f;
-    else
-        translateX -= 0.1f;
+	translateX -= -sin(rotateY - 1.55) * speed;
+	translateZ -= cos(rotateY - 1.55) * speed;
 }
-
-void Camera::LookDown(){
-    if (rotateX > 6.2f && rotateX < 6.4f)
-        rotateX -= 6.3f;
-    rotateX += 0.1f;
+// change x rotation to look down
+void Camera::LookDown() {
+	if (rotateX > 6.2f && rotateX < 6.4f)
+		rotateX -= 6.2f;
+	rotateX += rotspeed;
 }
-void Camera::LookUp(){
-    if (rotateX > -0.1f && rotateX < 0.1f)
-        rotateX += 6.3f;
-    rotateX -= 0.1f;
+// change x rotation to look up
+void Camera::LookUp() {
+	if (rotateX > -0.1f && rotateX < 0.1f)
+		rotateX += 6.3f;
+	rotateX -= rotspeed;
 }
-void Camera::LookLeft(){
-    if (rotateY > -0.1f && rotateY < 0.1f)
-        rotateY += 6.3f;
-    rotateY -= 0.1f;
+// change y rotation to look left
+void Camera::LookLeft() {
+	//Change 
+	if (rotateY > -0.1f && rotateY < 0.1f)
+		rotateY += 6.2f;
+	rotateY -= rotspeed;
+	std::cout << rotateY << std::endl;
 }
-void Camera::LookRight(){
-    if (rotateY > 6.2f && rotateY < 6.4f)
-        rotateY -= 6.3f;
-    rotateY += 0.1f;
+// change y rotation to look right
+void Camera::LookRight() {
+	if (rotateY > 6.2f && rotateY < 6.4f)
+		rotateY -= 6.3f;
+	rotateY += rotspeed;
 }
-
+// translate y so player cam goes up
 void Camera::Up() {
-    translateY = 0.1f;
+	translateY += speed;
 }
-
+// translate y so player cam goes down
 void Camera::Down() {
-    translateY = -0.1f;
+	translateY -= speed;
+}
+//Handle mouse movement
+void Camera::mouseMovemnt(int x, int y) {
+	// Prevents massive jumps
+	if (x - lastX > 100 || x - lastX < -100)
+	{
+		lastX = x;
+		lastY = y;
+	}
+	if (y - lastY > 100 || y - lastY < -100)
+	{
+		lastX = x;
+		lastY = y;
+	}
+
+	//Get the difference with last time
+	std::cout << "x" << x << ", lastX" << lastX << std::endl;
+	float yaw = x - lastX;
+	float pitch = y - lastY;
+	lastX = x;
+	lastY = y;
+	std::cout << yaw << std::endl;
+
+	// change the offset with the sensitivity
+	yaw *= rotspeed;
+	pitch *= rotspeed;
+
+	//Add yaw offset to the rotate y 
+	//Change rotx and rotz based upon the roty location
+	rotateZ += pitch * sin(rotateY);
+	rotateX += pitch * cos(rotateY);
+	rotateY += yaw;
+	if (rotateY > 6.2f && rotateY < 6.4f)
+		rotateY -= 6.3f;
 }
 
+// Update the view and projection based on trans and rot data
 void Camera::Update() {
-    view = glm::translate(view, glm::vec3(translateX, translateY, translateZ));
+	//translate camera view
+	view = glm::translate(standardView, glm::vec3(translateX, translateY, translateZ));
 
-    //projection matrix
-    projection = glm::rotate(projection, rotateY, glm::vec3(0.0, 1.0, 0.0));
-    projection = glm::rotate(projection, rotateX, glm::vec3(1.0, 0.0, 0.0));
-    //projection = glm::rotate(projection, rotateZ, glm::vec3(0.0, 0.0, 1.0));
-
-    rotateX = 0;
-    rotateY = 0;
-    rotateZ = 0;
-    translateX = 0;
-    translateY = 0;
-    translateZ = 0;
+	//projection matrix
+	// Use standardProjection so data is reset
+	// Use normal projection so rotY data is not lost
+	projection = glm::rotate(standardProjection, rotateX, glm::vec3(1.0, 0.0, 0.0));
+	projection = glm::rotate(projection, rotateY, glm::vec3(0.0, 1.0, 0.0));
+	projection = glm::rotate(projection, rotateZ, glm::vec3(0.0, 0.0, 1.0));
 }
