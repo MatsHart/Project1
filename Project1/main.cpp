@@ -58,9 +58,7 @@ glm::mat4 projection;
 
 LightSource light;
 
-vector<Object> objectList;
-
-Object objects[2];
+vector<Object> objects;
 
 bool firstInitMatric = true;
 
@@ -121,13 +119,9 @@ void Render() {
 
 
 void createObjects() {
-	objectList.push_back(Object());
-	//objects[0] = Object("Objects/car.obj", "Textures/Yellobrk.bmp", glm::vec3(1, 1, 1) , glm::vec3(-4.0, -0.25, -3.0));
-	//objects[1] = Object("Objects/torus.obj", "Textures/uvtemplate.bmp", glm::vec3(1, 1, 1), glm::vec3(-4.0, -0.25, -2.0));
+	objects.push_back( Object("Objects/carNoTires.obj", "Textures/Yellobrk.bmp", glm::vec3(0.0, -1.0, -3.0), glm::vec3(2.5, 2.5, 2.5)));
 
-	objects[0] = Object("Objects/carNoTires.obj", "Textures/Yellobrk.bmp", glm::vec3(0.0, -1.0, -3.0), glm::vec3(2.5, 2.5, 2.5));
-
-	objects[1] = Object("Objects/Tire.obj", "Textures/Yellobrk.bmp", glm::vec3(0.0, 3.0, -3.0), glm::vec3(2.5, 1.5, 2.5));
+	objects.push_back(Object("Objects/Tire.obj", "Textures/Yellobrk.bmp", glm::vec3(0.0, 3.0, -3.0), glm::vec3(2.5, 1.5, 2.5)));
 }
 
 //------------------------------------------------------------
@@ -146,7 +140,7 @@ void createEmptyMat4(int i) {
 }
 
 void InitMatrices(int i) {
-// Prevents the animation from stopping
+	// Prevents the animation from stopping
 	if (firstInitMatric)
 		createEmptyMat4(i);
 
@@ -158,7 +152,7 @@ void InitMatrices() {
 
 	cameras[ActiveCameraInterval].Update();
 
-	for (int i = 0; i < sizeof(objects) / sizeof(*objects); i++) {
+	for (int i = 0; i < objects.size(); i++) {
 		InitMatrices(i);
 	}
 	firstInitMatric = false;
@@ -192,10 +186,7 @@ void InitBuffers() {
 	uniform_material_power = glGetUniformLocation(program_id,
 		"mat_power");
 
-
-	int size = objectsSize;
-
-	for (int i = 0; i < (int)sizeof(objects) / sizeof(*objects); i++) {
+	for (int i = 0; i < objects.size(); i++) {
 
 		glGenBuffers(1, &vbo_normals);
 		glBindBuffer(GL_ARRAY_BUFFER, vbo_normals);
@@ -372,41 +363,13 @@ void InitShaders() {
 }
 
 void InitObjects() {
-	for (int i = 0; i < 2; i++) {
+	for (int i = 0; i < objects.size(); i++) {
 		if (objects[i].filePath != nullptr)
 			bool res = loadOBJ(objects[i].filePath, objects[i].vertices, objects[i].uvs, objects[i].normals);
 		if (objects[i].bmpPath != nullptr)
 			objects[i].texture_id = loadBMP(objects[i].bmpPath);
 	}
 }
-
-//------------------------------------------------------------
-// void InitMatrices()
-// 
-//------------------------------------------------------------
-
-
-
-//DERK
-//view matrix
-//view = glm::lookAt(
-//	glm::vec3(0.0, 1.0, 8.0),  // eye
-//	glm::vec3(0.0, 0.5, 0.0),  // center
-//	glm::vec3(0.0, 1.0, 0.0));  // up
-//view = glm::translate(view, glm::vec3(translateX, translateY, translateZ));
-//
-////projection matrix
-//projection = glm::perspective(
-//	glm::radians(45.0f),
-//	1.0f * WIDTH / HEIGHT, 0.1f,
-//	20.0f);
-//projection = glm::rotate(projection, rotateY, glm::vec3(0.0, 1.0, 0.0));
-//projection = glm::rotate(projection, rotateX, glm::vec3(1.0, 0.0, 0.0));
-//
-//for (int i = 0; i < amountOfModels; i++)
-//	mv[i] = view * model[i] * projection;
-
-
 
 void InitLight() {
 	light.position = glm::vec3(4.0, 4.0, 4.0);
