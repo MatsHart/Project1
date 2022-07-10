@@ -67,7 +67,7 @@ bool firstInitMatric = true;
 //vector<Camera> cameras;
 Camera cameras[2];
 
-int ActiveCameraInterval = 1;
+int ActiveCameraInterval = 0;
 
 void InitCameras() {
 	glm::mat4 view = glm::lookAt(
@@ -113,19 +113,7 @@ void Render() {
 
 
 	for (int i = 0; i < 2; i++) {
-		objects[i].mv = cameras[ActiveCameraInterval].view * objects[i].model;
-
-		// Send mvp
-		glUniformMatrix4fv(uniform_mv, 1, GL_FALSE, glm::value_ptr(objects[i].mv));
-
-		glBindTexture(GL_TEXTURE_2D, objects[i].texture_id);
-
-
-
-		// Send vao
-		glBindVertexArray(objects[i].vao);
-		glDrawArrays(GL_TRIANGLES, 0, objects[i].vertices.size());
-		glBindVertexArray(0);
+		objects[i].Render(cameras[ActiveCameraInterval].view, uniform_mv);
 
 	}
 	glutSwapBuffers();
@@ -272,6 +260,7 @@ void InitBuffers() {
 
 
 }
+
 void keyboardHandler(unsigned char key, int a, int b) {
 	switch (key) {
 		//Esc pressed close the application
@@ -351,7 +340,6 @@ void mouseHandler(int mx, int my) {
 	InitMatrices();
 	InitBuffers();
 	Render();
-	//std::cout << "x" << mx << ", y" << my << std::endl;
 }
 
 void InitGlutGlew(int argc, char** argv) {

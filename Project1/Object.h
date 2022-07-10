@@ -6,7 +6,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-//#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 using namespace std;
 
@@ -39,7 +39,7 @@ public:
 
 	~Object() {}
 
-	void Animate(float speed, glm::mat4);
+	void Render(glm::mat4 view, GLuint uniform_mv);
 
 };
 
