@@ -8,6 +8,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Animator.h"
+
 using namespace std;
 
 struct Material {
@@ -24,6 +26,7 @@ public:
 	const char* filePath;
 	const char* bmpPath;
 	Material material = Material();
+	Animator* animator = new Animator();
 	vector<glm::vec3> normals;
 	vector<glm::vec3> vertices;
 	vector<glm::vec2> uvs;
@@ -37,7 +40,9 @@ public:
 	Object(const char*, const char*, glm::vec3, glm::vec3);
 	Object(const char* filePath2, glm::vec3 scale, glm::vec3 translate);
 
-	~Object() {}
+	~Object() {
+		//animator->~Animator();
+	}
 
 	void Render(glm::mat4 view, GLuint uniform_mv);
 

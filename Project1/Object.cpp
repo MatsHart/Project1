@@ -6,22 +6,24 @@ Object::Object() {
 
 Object::Object(const char* filePath2, const char* bmpPath2, glm::vec3 scale, glm::vec3 translate) {
 	model = glm::mat4();
-	Object::filePath = filePath2;
-	Object::bmpPath = bmpPath2;
+	filePath = filePath2;
+	bmpPath = bmpPath2;
 	model = glm::translate(model, translate);
 	model = glm::scale(model, scale);
 }
 
 Object::Object(const char* filePath2, glm::vec3 scale, glm::vec3 translate) {
-	Object::filePath = filePath2;
+	filePath = filePath2;
 	model = glm::translate(model, translate);
 	model = glm::scale(model, scale);
-	Object::bmpPath = nullptr;
+	bmpPath = nullptr;
 }
 
 void Object::Render(glm::mat4 view, GLuint uniform_mv) {
 	//Animate
-	
+
+
+
 	// Update mv
 	mv = view * model;
 

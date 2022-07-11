@@ -12,6 +12,7 @@
 #include "texture.h"
 
 #include "Object.h"
+#include "WheelAnimator.h"
 
 #define objectsSize sizeof(objects) / sizeof(*objects);
 
@@ -103,16 +104,19 @@ void Render() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Do transformation
-	objects[0].model = glm::rotate(objects[0].model, 0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
-	objects[1].model = glm::rotate(objects[1].model, 0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
+	/*objects[0].model = glm::rotate(objects[0].model, 0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
+	objects[1].model = glm::rotate(objects[1].model, 0.01f, glm::vec3(0.0f, 1.0f, 0.0f));*/
+
+
+	
 
 	// Attach to program_id
 	glUseProgram(program_id);
 
 
-	for (int i = 0; i < 2; i++) {
+	for (int i = 0; i < objects.size(); i++) {
+			objects[i].model = objects[i].animator->Animate_Execute(objects[i].model);
 		objects[i].Render(cameras[ActiveCameraInterval].view, uniform_mv);
-
 	}
 	glutSwapBuffers();
 }
@@ -120,8 +124,9 @@ void Render() {
 
 void createObjects() {
 	objects.push_back( Object("Objects/carNoTires.obj", "Textures/Yellobrk.bmp", glm::vec3(0.0, -1.0, -3.0), glm::vec3(2.5, 2.5, 2.5)));
-
 	objects.push_back(Object("Objects/Tire.obj", "Textures/Yellobrk.bmp", glm::vec3(0.0, 3.0, -3.0), glm::vec3(2.5, 1.5, 2.5)));
+	objects[1].animator = new WheelAnimator();
+	//objects[1].animator = &wa;
 }
 
 //------------------------------------------------------------
@@ -378,6 +383,7 @@ void InitLight() {
 	objects[0].material.diffuse_color = glm::vec3(0.5, 0.5, 0.3);
 	objects[0].material.specular = glm::vec3(0.7, 0.7, 0.7);
 	objects[0].material.power = 1024.0f;
+
 
 	objects[1].material.ambient_color = glm::vec3(0.2, 0.2, 0.1);
 	objects[1].material.diffuse_color = glm::vec3(1.0, 1.0, 1.0);
