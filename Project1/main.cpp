@@ -123,10 +123,20 @@ void Render() {
 
 
 void createObjects() {
-	objects.push_back(Object("Objects/carNoTires.obj", "Textures/Yellobrk.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(2.5, 2.5, 2.5), glm::vec3(50.0, 1.0, 1.0)));
-	objects.push_back(Object("Objects/Tire.obj", "Textures/Yellobrk.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(2.5, 1.5, 2.5), glm::vec3(50.0, 1.0, 1.0)));
-	//objects[0].animator = new BodyAnimator();
-	objects[1].animator = new WheelAnimator();
+	//objects.push_back(Object("Objects/carNoTires.obj", "Textures/Yellobrk.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, 0, 0), glm::vec3(0.0, 1.0, 0.0) , 0));
+	//car body
+	objects.push_back(Object("Objects/carNoTires.obj", "Textures/Yellobrk.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, 0, 0), glm::vec3(0.0, 1.0, 0.0) , 0));
+	//tire tire Left back 
+	objects.push_back(Object("Objects/Tire.obj", "Textures/uvtemplate.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(1.2, 0, 0.1), glm::vec3(0.0, 0.0, 1.0), 3.14f));
+	//tire tire left front
+	objects.push_back(Object("Objects/Tire.obj", "Textures/uvtemplate.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(1.2, 0, 2.7), glm::vec3(0.0, 0.0, 1.0), 3.14f));
+	//tire tire Right back 
+	objects.push_back(Object("Objects/Tire.obj", "Textures/uvtemplate.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(-1.05,-1, 0.1), glm::vec3(0.0, 0.0, 1.0), 0));
+	//tire tire Right front
+	objects.push_back(Object("Objects/Tire.obj", "Textures/uvtemplate.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(-1.05, -1, 2.7), glm::vec3(0.0, 0.0, 1.0), 0));
+
+	////objects[0].animator = new BodyAnimator();
+	////objects[1].animator = new WheelAnimator();
 }
 
 //------------------------------------------------------------

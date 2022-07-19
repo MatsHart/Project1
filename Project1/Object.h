@@ -37,8 +37,8 @@ public:
 
 	Object();
 
-	Object(const char*, const char*, glm::vec3 scale, glm::vec3 translate, glm::vec3 rotate);
-	Object(const char* filePath2, glm::vec3 scale, glm::vec3 translate, glm::vec3 rotate);
+	Object(const char*, const char*, glm::vec3 scale, glm::vec3 translate, glm::vec3 rotate, float angle);
+	Object(const char* filePath2, glm::vec3 scale, glm::vec3 translate, glm::vec3 rotate, float angle);
 
 	~Object() {
 		//animator->~Animator();

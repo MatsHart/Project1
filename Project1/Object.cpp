@@ -4,19 +4,19 @@ Object::Object() {
 	model = glm::mat4();
 }
 
-Object::Object(const char* filePath2, const char* bmpPath2, glm::vec3 scale, glm::vec3 translate, glm::vec3 rotate) {
+Object::Object(const char* filePath2, const char* bmpPath2, glm::vec3 scale, glm::vec3 translate, glm::vec3 rotate, float angle) {
 	model = glm::mat4();
 	filePath = filePath2;
 	bmpPath = bmpPath2;
 	model = glm::translate(model, translate);
-	model = glm::rotate(model, 90.0f, rotate);
+	model = glm::rotate(model, angle, rotate);
 	model = glm::scale(model, scale);
 }
 
-Object::Object(const char* filePath2, glm::vec3 scale, glm::vec3 translate, glm::vec3 rotate) {
+Object::Object(const char* filePath2, glm::vec3 scale, glm::vec3 translate, glm::vec3 rotate, float angle) {
 	filePath = filePath2;
 	model = glm::translate(model, translate);
-	model = glm::rotate(model, 1.0f, rotate);
+	model = glm::rotate(model, angle, rotate);
 	model = glm::scale(model, scale);
 	bmpPath = nullptr;
 }
