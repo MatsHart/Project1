@@ -57,6 +57,9 @@
     <ClCompile Include="WheelAnimator.cpp">
       <Filter>Source Files\Animations</Filter>
     </ClCompile>
+    <ClCompile Include="BodyAnimator.cpp">
+      <Filter>Source Files\Animations</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="glsl.h">
@@ -81,6 +84,9 @@
       <Filter>Header Files\Animations</Filter>
     </ClInclude>
     <ClInclude Include="WheelAnimator.h">
+      <Filter>Header Files\Animations</Filter>
+    </ClInclude>
+    <ClInclude Include="BodyAnimator.h">
       <Filter>Header Files\Animations</Filter>
     </ClInclude>
   </ItemGroup>

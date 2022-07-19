@@ -13,6 +13,7 @@
 
 #include "Object.h"
 #include "WheelAnimator.h"
+#include "BodyAnimator.h"
 
 #define objectsSize sizeof(objects) / sizeof(*objects);
 
@@ -61,7 +62,6 @@ LightSource light;
 
 vector<Object> objects;
 
-bool firstInitMatric = true;
 
 //vector<Camera> cameras;
 Camera cameras[2];
@@ -108,14 +108,14 @@ void Render() {
 	objects[1].model = glm::rotate(objects[1].model, 0.01f, glm::vec3(0.0f, 1.0f, 0.0f));*/
 
 
-	
+
 
 	// Attach to program_id
 	glUseProgram(program_id);
 
 
 	for (int i = 0; i < objects.size(); i++) {
-			objects[i].model = objects[i].animator->Animate_Execute(objects[i].model);
+		objects[i].model = objects[i].animator->Animate_Execute(objects[i].model);
 		objects[i].Render(cameras[ActiveCameraInterval].view, uniform_mv);
 	}
 	glutSwapBuffers();
@@ -123,10 +123,10 @@ void Render() {
 
 
 void createObjects() {
-	objects.push_back( Object("Objects/carNoTires.obj", "Textures/Yellobrk.bmp", glm::vec3(0.0, -1.0, -3.0), glm::vec3(2.5, 2.5, 2.5)));
-	objects.push_back(Object("Objects/Tire.obj", "Textures/Yellobrk.bmp", glm::vec3(0.0, 3.0, -3.0), glm::vec3(2.5, 1.5, 2.5)));
+	objects.push_back(Object("Objects/carNoTires.obj", "Textures/Yellobrk.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(2.5, 2.5, 2.5), glm::vec3(50.0, 1.0, 1.0)));
+	objects.push_back(Object("Objects/Tire.obj", "Textures/Yellobrk.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(2.5, 1.5, 2.5), glm::vec3(50.0, 1.0, 1.0)));
+	//objects[0].animator = new BodyAnimator();
 	objects[1].animator = new WheelAnimator();
-	//objects[1].animator = &wa;
 }
 
 //------------------------------------------------------------
@@ -139,28 +139,14 @@ void Render(int n) {
 	glutTimerFunc(DELTA_TIME, Render, 0);
 }
 
-//  Only empty the model mat4 on first run
-void createEmptyMat4(int i) {
-	objects[i].model = glm::mat4();
-}
-
-void InitMatrices(int i) {
-	// Prevents the animation from stopping
-	if (firstInitMatric)
-		createEmptyMat4(i);
-
-	objects[i].mv = cameras[ActiveCameraInterval].view * objects[i].model * cameras[ActiveCameraInterval].projection;
-}
-
 
 void InitMatrices() {
 
 	cameras[ActiveCameraInterval].Update();
 
 	for (int i = 0; i < objects.size(); i++) {
-		InitMatrices(i);
+		objects[i].mv = cameras[ActiveCameraInterval].view * objects[i].model * cameras[ActiveCameraInterval].projection;
 	}
-	firstInitMatric = false;
 }
 
 //------------------------------------------------------------
