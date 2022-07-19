@@ -131,12 +131,16 @@ void createObjects() {
 	//tire tire left front
 	objects.push_back(Object("Objects/Tire.obj", "Textures/uvtemplate.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(1.2, 0, 2.7), glm::vec3(0.0, 0.0, 1.0), 3.14f));
 	//tire tire Right back 
-	objects.push_back(Object("Objects/Tire.obj", "Textures/uvtemplate.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(-1.05,-1, 0.1), glm::vec3(0.0, 0.0, 1.0), 0));
+	objects.push_back(Object("Objects/Tire.obj", "Textures/uvtemplate.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(-1.05,-1.1, 0.1), glm::vec3(0.0, 0.0, 1.0), 0));
 	//tire tire Right front
-	objects.push_back(Object("Objects/Tire.obj", "Textures/uvtemplate.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(-1.05, -1, 2.7), glm::vec3(0.0, 0.0, 1.0), 0));
+	objects.push_back(Object("Objects/Tire.obj", "Textures/uvtemplate.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(-1.05, -1.1, 2.7), glm::vec3(0.0, 0.0, 1.0), 0));
 
 	////objects[0].animator = new BodyAnimator();
-	////objects[1].animator = new WheelAnimator();
+	objects[0].animator = new WheelAnimator();
+	objects[1].animator = new WheelAnimator();
+	objects[2].animator = new WheelAnimator();
+	objects[3].animator = new WheelAnimator();
+	objects[4].animator = new WheelAnimator();
 }
 
 //------------------------------------------------------------
