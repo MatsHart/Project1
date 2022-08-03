@@ -36,8 +36,6 @@ struct LightSource {
 	glm::vec3 position;
 };
 
-
-
 //--------------------------------------------------------------------------------
 // Variables
 //--------------------------------------------------------------------------------
@@ -52,11 +50,7 @@ GLuint uniform_material_diffuse;
 GLuint uniform_material_specular;
 GLuint uniform_material_power;
 GLuint uniform_light_pos;
-//GLuint uniform_light_pos;
-
 // Matrices
-
-glm::mat4 projection;
 
 LightSource light;
 
@@ -68,6 +62,10 @@ Camera cameras[2];
 
 int ActiveCameraInterval = 0;
 
+//--------------------------------------------------------------------------------
+// Initialize camera
+//--------------------------------------------------------------------------------
+
 void InitCameras() {
 	glm::mat4 view = glm::lookAt(
 		glm::vec3(0.0, 1.0, 8.0),  // eye
@@ -77,22 +75,12 @@ void InitCameras() {
 	glm::mat4 projection = glm::perspective(
 		glm::radians(45.0f),
 		1.0f * WIDTH / HEIGHT, 0.1f,
-		20.0f);
+		200.0f);
 
 	//cameras.push_back(Camera(view, projection, WIDTH, HEIGHT));
 	cameras[0] = (Camera(view, projection));
 	cameras[1] = Camera(WIDTH, HEIGHT);
 }
-//--------------------------------------------------------------------------------
-// Mesh variables
-//--------------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------------
-// Keyboard handling
-//--------------------------------------------------------------------------------
-
-
-
 
 //--------------------------------------------------------------------------------
 // Rendering
@@ -103,42 +91,17 @@ void Render() {
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// Do transformation
-	/*objects[0].model = glm::rotate(objects[0].model, 0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
-	objects[1].model = glm::rotate(objects[1].model, 0.01f, glm::vec3(0.0f, 1.0f, 0.0f));*/
-
-
-
-
 	// Attach to program_id
 	glUseProgram(program_id);
 
-
+	// For every object call the render method
 	for (int i = 0; i < objects.size(); i++) {
-		objects[i].model = objects[i].animator->Animate_Execute(objects[i].model);
 		objects[i].Render(cameras[ActiveCameraInterval].view, uniform_mv);
 	}
 	glutSwapBuffers();
 }
 
 
-void createObjects() {
-	//car body
-	objects.push_back(Object("Objects/carNoTires.obj", "Textures/Yellobrk.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, 0, 0), glm::vec3(0.0, 1.0, 0.0) , 0));
-	objects[0].animator = new WheelAnimator();
-	//tire tire Left back 
-	objects.push_back(Object("Objects/Tire.obj", "Textures/uvtemplate.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(1.2, 0, 0.1), glm::vec3(0.0, 0.0, 1.0), 3.14f));
-	objects[1].animator = new WheelAnimator();
-	//tire tire left front
-	objects.push_back(Object("Objects/Tire.obj", "Textures/uvtemplate.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(1.2, 0, 2.7), glm::vec3(0.0, 0.0, 1.0), 3.14f));
-	objects[2].animator = new WheelAnimator();
-	//tire tire Right back 
-	objects.push_back(Object("Objects/Tire.obj", "Textures/uvtemplate.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(-1.05,-1.1, 0.1), glm::vec3(0.0, 0.0, 1.0), 0));
-	objects[3].animator = new WheelAnimator();
-	//tire tire Right front
-	objects.push_back(Object("Objects/Tire.obj", "Textures/uvtemplate.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(-1.05, -1.1, 2.7), glm::vec3(0.0, 0.0, 1.0), 0));
-	objects[4].animator = new WheelAnimator();
-}
 
 //------------------------------------------------------------
 // void Render(int n)
@@ -150,6 +113,133 @@ void Render(int n) {
 	glutTimerFunc(DELTA_TIME, Render, 0);
 }
 
+//--------------------------------------------------------------------------------
+// Create objects
+//--------------------------------------------------------------------------------
+
+void createObjects() {
+	//car body
+	objects.push_back(Object("Objects/carNoTires.obj", "Textures/Yellobrk.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, 0, 0), glm::vec3(0.0, 1.0, 0.0), 0));
+	//objects[0].setAnimator(new WheelAnimator());
+	//tire tire Left back 
+	objects.push_back(Object("Objects/Tire.obj", "Textures/uvtemplate.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(1.2, 0, 0.1), glm::vec3(0.0, 0.0, 1.0), 3.14f));
+	//objects[1].setAnimator(new WheelAnimator());
+	//tire tire left front
+	objects.push_back(Object("Objects/Tire.obj", "Textures/uvtemplate.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(1.2, 0, 2.7), glm::vec3(0.0, 0.0, 1.0), 3.14f));
+	//objects[2].setAnimator(new WheelAnimator());
+	//tire tire Right back 
+	objects.push_back(Object("Objects/Tire.obj", "Textures/uvtemplate.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(-1.05, -1.1, 0.1), glm::vec3(0.0, 0.0, 1.0), 0));
+	//objects[3].setAnimator(new WheelAnimator());
+	//tire tire Right front
+	objects.push_back(Object("Objects/Tire.obj", "Textures/uvtemplate.bmp", glm::vec3(0.8, 0.7, 1.0), glm::vec3(-1.05, -1.1, 2.7), glm::vec3(0.0, 0.0, 1.0), 0));
+	//objects[4].setAnimator(new WheelAnimator());
+
+
+	// Road
+	objects.push_back(Object("Objects/box.obj", "Textures/brick.bmp", glm::vec3(10, 0.1, 40), glm::vec3(1, -1.2, 15), glm::vec3(0.0, 0.0, 1.0), 0));
+
+	//Lantern
+	objects.push_back(Object("Objects/Lightpost.obj", "Textures/metal.bmp", glm::vec3(0.6, 0.5, 0.6), glm::vec3(-2.9, -1.2, -3), glm::vec3(0.0, 0.0, 1.0), 0));
+	objects.push_back(Object("Objects/Lightpost.obj", "Textures/metal.bmp", glm::vec3(0.6, 0.5, 0.6), glm::vec3(-2.9, -1.2, 34), glm::vec3(0.0, 0.0, 1.0), 0));
+
+	//elecbox
+	objects.push_back(Object("Objects/Elecbox.obj", "Textures/metal.bmp", glm::vec3(1, 1, 0.6), glm::vec3(-10, -1, 7.6), glm::vec3(0.0, 0.0, 1.0), 0));
+
+	//plants
+	objects.push_back(Object("Objects/plants.obj", "Textures/wood.bmp", glm::vec3(1, 0.8, 0.6), glm::vec3(-11, -1, 10), glm::vec3(0.0, 0.0, 1.0), 0));
+	objects.push_back(Object("Objects/cylinder32.obj", "Textures/wood.bmp", glm::vec3(0.3, 4, 0.3), glm::vec3(-5, -1, 10), glm::vec3(0.0, 0.0, 1.0), 0));
+	objects.push_back(Object("Objects/sphere.obj", "Textures/leaves.bmp", glm::vec3(1, 1, 1), glm::vec3(-5, 4, 10), glm::vec3(0.0, 0.0, 1.0), 0));
+
+
+	objects.push_back(Object("Objects/plants.obj", "Textures/wood.bmp", glm::vec3(1, 0.8, 0.6), glm::vec3(-11, -1, 22), glm::vec3(0.0, 0.0, 1.0), 0));
+	objects.push_back(Object("Objects/cylinder32.obj", "Textures/wood.bmp", glm::vec3(0.3, 4, 0.3), glm::vec3(-5, -1, 22), glm::vec3(0.0, 0.0, 1.0), 0));
+	objects.push_back(Object("Objects/sphere.obj", "Textures/leaves.bmp", glm::vec3(1, 1, 1), glm::vec3(-5, 4, 22), glm::vec3(0.0, 0.0, 1.0), 0));
+
+
+	//teapot
+	objects.push_back(Object("Objects/teapot.obj", "Textures/yellowbrk.bmp", glm::vec3(1, 1, 1), glm::vec3(-7, -1, 18), glm::vec3(0.0, 0.0, 1.0), 0));
+	objects.push_back(Object("Objects/teapot.obj", "Textures/yellowbrk.bmp", glm::vec3(1, 1, 1), glm::vec3(-7, -1, 13), glm::vec3(0.0, 0.0, 1.0), 0));
+
+	//houses
+	
+
+	//1
+	// path
+	objects.push_back(Object("Objects/box.obj", "Textures/yellowbrk.bmp", glm::vec3(10, 0.1, 6), glm::vec3(-9, -1.2, 1), glm::vec3(0.0, 0.0, 1.0), 0));
+	//block
+	objects.push_back(Object("Objects/box.obj", "Textures/brick.bmp", glm::vec3(8.0, 6.0, 6.0), glm::vec3(-15, -1, 1), glm::vec3(0.0, 0.0, 1.0), 0));
+	//roof
+	objects.push_back(Object("Objects/roof.obj", "Textures/roof2.bmp", glm::vec3(0.55, 1.0, 1.8), glm::vec3(-15, 3, -1.45), glm::vec3(0.0, 2, 0.0), 29.85));
+
+
+	//2
+	// path
+	objects.push_back(Object("Objects/box.obj", "Textures/yellowbrk.bmp", glm::vec3(10, 0.1, 1), glm::vec3(-9, -1.2, 4.5), glm::vec3(0.0, 0.0, 1.0), 0));
+	// gravel
+	objects.push_back(Object("Objects/box.obj", "Textures/gravel.bmp", glm::vec3(10, 0.1, 5.2), glm::vec3(-9, -1.2, 7.5), glm::vec3(0.0, 0.0, 1.0), 0));
+	//block
+	objects.push_back(Object("Objects/box.obj", "Textures/brick.bmp", glm::vec3(8.0, 6.0, 6.0), glm::vec3(-15, -1, 7), glm::vec3(0.0, 0.0, 1.0), 0));
+	//roof
+	objects.push_back(Object("Objects/roof.obj", "Textures/roof2.bmp", glm::vec3(0.55, 1.0, 1.8), glm::vec3(-15, 3, 4.45), glm::vec3(0.0, 2, 0.0), 29.85));
+	//Chimney
+	objects.push_back(Object("Objects/Chimney.obj", "Textures/brick.bmp", glm::vec3(0.5, 0.4, 0.5), glm::vec3(-15, 8, 4.45), glm::vec3(0.0, 0, 1.0), 0));
+
+
+	//3
+	// gravel
+	objects.push_back(Object("Objects/box.obj", "Textures/gravel.bmp", glm::vec3(10, 0.1, 5.2), glm::vec3(-9, -1.2, 12.5), glm::vec3(0.0, 0.0, 1.0), 0));
+	// path
+	objects.push_back(Object("Objects/box.obj", "Textures/yellowbrk.bmp", glm::vec3(10, 0.1, 1.8), glm::vec3(-9, -1.2, 16), glm::vec3(0.0, 0.0, 1.0), 0));
+	//block
+	objects.push_back(Object("Objects/box.obj", "Textures/brick.bmp", glm::vec3(8.0, 6.0, 6.0), glm::vec3(-15, -1, 13), glm::vec3(0.0, 0.0, 1.0), 0));
+	//roof
+	objects.push_back(Object("Objects/roof.obj", "Textures/roof2.bmp", glm::vec3(0.55, 1.0, 1.8), glm::vec3(-15, 3, 9.45), glm::vec3(0.0, 2, 0.0), 29.85));
+
+	//pillars
+	objects.push_back(Object("Objects/SimplePole.obj", "Textures/brick.bmp", glm::vec3(0.3, 0.3, 0.3), glm::vec3(-4.4, -1.2, 15), glm::vec3(0.0, 0.0, 1.0), 0));
+	objects.push_back(Object("Objects/SimplePole.obj", "Textures/brick.bmp", glm::vec3(0.3, 0.3, 0.3), glm::vec3(-4.4, -1.2, 17), glm::vec3(0.0, 0.0, 1.0), 0));
+
+	//4
+	// gravel
+	objects.push_back(Object("Objects/box.obj", "Textures/gravel.bmp", glm::vec3(10, 0.1, 5.2), glm::vec3(-9, -1.2, 19.5), glm::vec3(0.0, 0.0, 1.0), 0));
+	//block
+	objects.push_back(Object("Objects/box.obj", "Textures/brick.bmp", glm::vec3(8.0, 6.0, 6.0), glm::vec3(-15, -1, 19), glm::vec3(0.0, 0.0, 1.0), 0));
+	//roof
+	objects.push_back(Object("Objects/roof.obj", "Textures/roof2.bmp", glm::vec3(0.55, 1.0, 1.8), glm::vec3(-15, 3, 14.45), glm::vec3(0.0, 2, 0.0), 29.85));
+	//Chimney
+	objects.push_back(Object("Objects/Chimney.obj", "Textures/brick.bmp", glm::vec3(0.5, 0.4, 0.5), glm::vec3(-15, 8, 14.45), glm::vec3(0.0, 0, 1.0), 0));
+
+
+	//5
+	// gravel
+	objects.push_back(Object("Objects/box.obj", "Textures/gravel.bmp", glm::vec3(10, 0.1, 5.2), glm::vec3(-9, -1.2, 24.5), glm::vec3(0.0, 0.0, 1.0), 0));
+	// path
+	objects.push_back(Object("Objects/box.obj", "Textures/yellowbrk.bmp", glm::vec3(10, 0.1, 1), glm::vec3(-9, -1.2, 27.5), glm::vec3(0.0, 0.0, 1.0), 0));
+	//block
+	objects.push_back(Object("Objects/box.obj", "Textures/brick.bmp", glm::vec3(8.0, 6.0, 6.0), glm::vec3(-15, -1, 25), glm::vec3(0.0, 0.0, 1.0), 0));
+	//roof
+	objects.push_back(Object("Objects/roof.obj", "Textures/roof2.bmp", glm::vec3(0.55, 1.0, 1.8), glm::vec3(-15, 3, 19.45), glm::vec3(0.0, 2, 0.0), 29.85));
+
+
+	//6
+	// path
+	objects.push_back(Object("Objects/box.obj", "Textures/yellowbrk.bmp", glm::vec3(10, 0.1, 6), glm::vec3(-9, -1.2, 31), glm::vec3(0.0, 0.0, 1.0), 0));
+	//block
+	objects.push_back(Object("Objects/box.obj", "Textures/brick.bmp", glm::vec3(8.0, 6.0, 6.0), glm::vec3(-15, -1, 31), glm::vec3(0.0, 0.0, 1.0), 0));
+	//roof
+	objects.push_back(Object("Objects/roof.obj", "Textures/roof2.bmp", glm::vec3(0.55, 1.0, 1.8), glm::vec3(-15, 3, 24.45), glm::vec3(0.0, 2, 0.0), 29.85));
+	objects.push_back(Object("Objects/roof.obj", "Textures/roof2.bmp", glm::vec3(0.55, 1.0, 1.8), glm::vec3(-15, 3, 28.45), glm::vec3(0.0, 2, 0.0), 29.85));
+	//Chimney
+	objects.push_back(Object("Objects/Chimney.obj", "Textures/brick.bmp", glm::vec3(0.5, 0.4, 0.5), glm::vec3(-15, 8, 24.45), glm::vec3(0.0, 0, 1.0), 0));
+
+
+
+
+}
+
+//--------------------------------------------------------------------------------
+// Init Matrices
+//--------------------------------------------------------------------------------
 
 void InitMatrices() {
 
@@ -254,6 +344,10 @@ void InitBuffers() {
 
 }
 
+//------------------------------------------------------------
+// Add all keyboard handlers
+//------------------------------------------------------------
+
 void keyboardHandler(unsigned char key, int a, int b) {
 	switch (key) {
 		//Esc pressed close the application
@@ -323,17 +417,21 @@ void keyboardHandler(unsigned char key, int a, int b) {
 	InitBuffers();
 	Render();
 }
-//------------------------------------------------------------
-// void InitGlutGlew(int argc, char **argv)
-// Initializes Glut and Glew
-//------------------------------------------------------------
 
+//------------------------------------------------------------
+// call mousemovent
+//------------------------------------------------------------
 void mouseHandler(int mx, int my) {
 	cameras[ActiveCameraInterval].mouseMovemnt(mx, my);
 	InitMatrices();
 	InitBuffers();
 	Render();
 }
+
+//------------------------------------------------------------
+// void InitGlutGlew(int argc, char **argv)
+// Initializes Glut and Glew
+//------------------------------------------------------------
 
 void InitGlutGlew(int argc, char** argv) {
 	glutInit(&argc, argv);
@@ -347,7 +445,6 @@ void InitGlutGlew(int argc, char** argv) {
 
 	glewInit();
 }
-
 
 //------------------------------------------------------------
 // void InitShaders()
@@ -364,6 +461,10 @@ void InitShaders() {
 	program_id = glsl::makeShaderProgram(vsh_id, fsh_id);
 }
 
+//------------------------------------------------------------
+// Init objects
+//------------------------------------------------------------
+
 void InitObjects() {
 	for (int i = 0; i < objects.size(); i++) {
 		if (objects[i].filePath != nullptr)
@@ -372,6 +473,10 @@ void InitObjects() {
 			objects[i].texture_id = loadBMP(objects[i].bmpPath);
 	}
 }
+
+//------------------------------------------------------------
+// Init lights
+//------------------------------------------------------------
 
 void InitLight() {
 	light.position = glm::vec3(4.0, 4.0, 4.0);
@@ -388,10 +493,7 @@ void InitLight() {
 	objects[1].material.power = 1024.0f;
 }
 
-
-
-
-
+// Main object
 int main(int argc, char** argv) {
 	InitGlutGlew(argc, argv);
 	createObjects();

@@ -12,6 +12,7 @@
 
 using namespace std;
 
+//Material struct to create different materials
 struct Material {
 	glm::vec3 ambient_color;
 	glm::vec3 diffuse_color;
@@ -23,6 +24,7 @@ struct Material {
 class Object
 {
 public:
+	// All needed variables to create a object
 	const char* filePath;
 	const char* bmpPath;
 	Material material = Material();
@@ -36,15 +38,19 @@ public:
 	GLuint vao;
 
 	Object();
-
+	// constructor for object with bmp and obj file
 	Object(const char*, const char*, glm::vec3 scale, glm::vec3 translate, glm::vec3 rotate, float angle);
+	//constructor with only a obj file
 	Object(const char* filePath2, glm::vec3 scale, glm::vec3 translate, glm::vec3 rotate, float angle);
 
 	~Object() {
+		
 		//animator->~Animator();
 	}
 
 	void Render(glm::mat4 view, GLuint uniform_mv);
 
+
+	void setAnimator(Animator*);
 };
 

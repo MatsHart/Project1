@@ -16,16 +16,15 @@ Object::Object(const char* filePath2, const char* bmpPath2, glm::vec3 scale, glm
 Object::Object(const char* filePath2, glm::vec3 scale, glm::vec3 translate, glm::vec3 rotate, float angle) {
 	filePath = filePath2;
 	model = glm::translate(model, translate);
-	model = glm::rotate(model, angle, rotate);
+	model = glm::rotate(model, glm::radians(angle), rotate);
 	model = glm::scale(model, scale);
 	bmpPath = nullptr;
 }
 
+// Render the object
 void Object::Render(glm::mat4 view, GLuint uniform_mv) {
 	//Animate
-
-
-
+	model = animator->Animate_Execute(model);
 	// Update mv
 	mv = view * model;
 
@@ -38,4 +37,10 @@ void Object::Render(glm::mat4 view, GLuint uniform_mv) {
 	glBindVertexArray(vao);
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 	glBindVertexArray(0);
+}
+
+// First delete the old animator to then add the new animator
+void Object::setAnimator(Animator* animator) {
+	delete this->animator;
+	this->animator = animator;
 }

@@ -14,7 +14,7 @@ Camera::Camera(const int WIDTH, const int HEIGHT) {
 	standardProjection = glm::perspective(
 		glm::radians(45.0f),
 		1.0f * WIDTH / HEIGHT, 0.1f,
-		20.0f);
+		200.0f);
 }
 
 Camera::Camera(glm::mat4 view, glm::mat4 projection) {
@@ -93,7 +93,6 @@ void Camera::mouseMovemnt(int x, int y) {
 	}
 
 	//Get the difference with last time
-	std::cout << "x" << x << ", lastX" << lastX << std::endl;
 	float yaw = x - lastX;
 	float pitch = y - lastY;
 	lastX = x;
