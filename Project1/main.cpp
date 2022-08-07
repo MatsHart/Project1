@@ -88,7 +88,7 @@ void InitCameras() {
 
 	//overview camera
 	//cameras[1] = Camera(WIDTH, HEIGHT);
-	cameras.push_back( Camera(WIDTH, HEIGHT));
+	cameras.push_back(Camera(WIDTH, HEIGHT));
 }
 
 //--------------------------------------------------------------------------------
@@ -131,6 +131,7 @@ void createObjects() {
 	objects.push_back(Object("Objects/carNoTires.obj", "Textures/metal.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, 0, 0), glm::vec3(0.0, 1.0, 0.0), 0, new BodyAnimator()));
 
 	//tire tire Left back 
+	//objects.push_back(Object("Objects/Tire.obj", "Textures/uvtemplate.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(1, 3.5, -0.7), glm::vec3(0.0, 0.0, 1.0), 3.14f, new InverseWheelAnimator()));
 	objects.push_back(Object("Objects/Tire.obj", "Textures/rubber.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(1, -0.5, -0.7), glm::vec3(0.0, 0.0, 1.0), 3.14f, new InverseWheelAnimator()));
 
 	//tire tire left front
@@ -431,6 +432,9 @@ void keyboardHandler(unsigned char key, int a, int b) {
 			cameras[1] = Camera();
 		}
 		break;
+	case 32:
+		objects[0].model= objects[0].animator->Animate_Execute(objects[0].model);
+		break;
 	}
 	InitMatrices();
 	InitBuffers();
@@ -500,7 +504,7 @@ void InitObjects() {
 void InitLight() {
 	light.position = glm::vec3(4.0, 4.0, 4.0);
 
-	
+
 	objects[0].material.ambient_color = glm::vec3(0.2, 0.2, 0.1);
 	objects[0].material.diffuse_color = glm::vec3(0.5, 0.5, 0.3);
 	objects[0].material.specular = glm::vec3(0.7, 0.7, 0.7);

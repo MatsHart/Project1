@@ -142,5 +142,4 @@ void Camera::Update() {
 	projection = glm::rotate(projection, rotateY, glm::vec3(0.0, 1.0, 0.0));
 	projection = glm::rotate(projection, rotateZ, glm::vec3(0.0, 0.0, 1.0));
 
-	std::cout << "COORDS:::::::" << "\n X" << translateX << "Y" << translateY << "Z" << translateZ << std::endl;
 }
