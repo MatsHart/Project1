@@ -13,6 +13,9 @@
 
 #include "Object.h"
 #include "WheelAnimator.h"
+#include "InverseWheelAnimator.h"
+#include "RotateCupAnimator.h"
+#include "LeaveAnimator.h"
 #include "BodyAnimator.h"
 
 #define objectsSize sizeof(objects) / sizeof(*objects);
@@ -57,8 +60,8 @@ LightSource light;
 vector<Object> objects;
 
 
-//vector<Camera> cameras;
-Camera cameras[2];
+vector<Camera> cameras;
+//Camera cameras[2];
 
 int ActiveCameraInterval = 0;
 
@@ -67,6 +70,8 @@ int ActiveCameraInterval = 0;
 //--------------------------------------------------------------------------------
 
 void InitCameras() {
+
+	//Walking mode camera
 	glm::mat4 view = glm::lookAt(
 		glm::vec3(0.0, 1.0, 8.0),  // eye
 		glm::vec3(0.0, 0.5, 0.0),  // center
@@ -78,8 +83,12 @@ void InitCameras() {
 		200.0f);
 
 	//cameras.push_back(Camera(view, projection, WIDTH, HEIGHT));
-	cameras[0] = (Camera(view, projection));
-	cameras[1] = Camera(WIDTH, HEIGHT);
+	cameras.push_back(Camera(view, projection));
+	//cameras[0] = (Camera(view, projection));
+
+	//overview camera
+	//cameras[1] = Camera(WIDTH, HEIGHT);
+	cameras.push_back( Camera(WIDTH, HEIGHT));
 }
 
 //--------------------------------------------------------------------------------
@@ -119,21 +128,19 @@ void Render(int n) {
 
 void createObjects() {
 	//car body
-	objects.push_back(Object("Objects/carNoTires.obj", "Textures/Yellobrk.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, 0, 0), glm::vec3(0.0, 1.0, 0.0), 0));
-	//objects[0].setAnimator(new WheelAnimator());
-	//tire tire Left back 
-	objects.push_back(Object("Objects/Tire.obj", "Textures/uvtemplate.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(1.2, 0, 0.1), glm::vec3(0.0, 0.0, 1.0), 3.14f));
-	//objects[1].setAnimator(new WheelAnimator());
-	//tire tire left front
-	objects.push_back(Object("Objects/Tire.obj", "Textures/uvtemplate.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(1.2, 0, 2.7), glm::vec3(0.0, 0.0, 1.0), 3.14f));
-	//objects[2].setAnimator(new WheelAnimator());
-	//tire tire Right back 
-	objects.push_back(Object("Objects/Tire.obj", "Textures/uvtemplate.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(-1.05, -1.1, 0.1), glm::vec3(0.0, 0.0, 1.0), 0));
-	//objects[3].setAnimator(new WheelAnimator());
-	//tire tire Right front
-	objects.push_back(Object("Objects/Tire.obj", "Textures/uvtemplate.bmp", glm::vec3(0.8, 0.7, 1.0), glm::vec3(-1.05, -1.1, 2.7), glm::vec3(0.0, 0.0, 1.0), 0));
-	//objects[4].setAnimator(new WheelAnimator());
+	objects.push_back(Object("Objects/carNoTires.obj", "Textures/metal.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, 0, 0), glm::vec3(0.0, 1.0, 0.0), 0, new BodyAnimator()));
 
+	//tire tire Left back 
+	objects.push_back(Object("Objects/Tire.obj", "Textures/rubber.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(1, -0.5, -0.7), glm::vec3(0.0, 0.0, 1.0), 3.14f, new InverseWheelAnimator()));
+
+	//tire tire left front
+	objects.push_back(Object("Objects/Tire.obj", "Textures/rubber.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(1, -0.5, 1.8), glm::vec3(0.0, 0.0, 1.0), 3.14f, new InverseWheelAnimator()));
+
+	//tire tire Right back 
+	objects.push_back(Object("Objects/Tire.obj", "Textures/rubber.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(-0.9, -0.5, -0.7), glm::vec3(0.0, 0.0, 1.0), 0, new WheelAnimator()));
+
+	//tire tire Right front
+	objects.push_back(Object("Objects/Tire.obj", "Textures/rubber.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(-0.9, -0.5, 1.8), glm::vec3(0.0, 0.0, 1.0), 0, new WheelAnimator()));
 
 	// Road
 	objects.push_back(Object("Objects/box.obj", "Textures/brick.bmp", glm::vec3(10, 0.1, 40), glm::vec3(1, -1.2, 15), glm::vec3(0.0, 0.0, 1.0), 0));
@@ -148,20 +155,20 @@ void createObjects() {
 	//plants
 	objects.push_back(Object("Objects/plants.obj", "Textures/wood.bmp", glm::vec3(1, 0.8, 0.6), glm::vec3(-11, -1, 10), glm::vec3(0.0, 0.0, 1.0), 0));
 	objects.push_back(Object("Objects/cylinder32.obj", "Textures/wood.bmp", glm::vec3(0.3, 4, 0.3), glm::vec3(-5, -1, 10), glm::vec3(0.0, 0.0, 1.0), 0));
-	objects.push_back(Object("Objects/sphere.obj", "Textures/leaves.bmp", glm::vec3(1, 1, 1), glm::vec3(-5, 4, 10), glm::vec3(0.0, 0.0, 1.0), 0));
+	objects.push_back(Object("Objects/sphere.obj", "Textures/leaves.bmp", glm::vec3(1, 1, 1), glm::vec3(-5, 4, 10), glm::vec3(0.0, 0.0, 1.0), 0, new LeaveAnimator()));
 
 
 	objects.push_back(Object("Objects/plants.obj", "Textures/wood.bmp", glm::vec3(1, 0.8, 0.6), glm::vec3(-11, -1, 22), glm::vec3(0.0, 0.0, 1.0), 0));
 	objects.push_back(Object("Objects/cylinder32.obj", "Textures/wood.bmp", glm::vec3(0.3, 4, 0.3), glm::vec3(-5, -1, 22), glm::vec3(0.0, 0.0, 1.0), 0));
-	objects.push_back(Object("Objects/sphere.obj", "Textures/leaves.bmp", glm::vec3(1, 1, 1), glm::vec3(-5, 4, 22), glm::vec3(0.0, 0.0, 1.0), 0));
+	objects.push_back(Object("Objects/sphere.obj", "Textures/leaves.bmp", glm::vec3(1, 1, 1), glm::vec3(-5, 4, 22), glm::vec3(0.0, 0.0, 1.0), 0, new LeaveAnimator()));
 
 
 	//teapot
-	objects.push_back(Object("Objects/teapot.obj", "Textures/yellowbrk.bmp", glm::vec3(1, 1, 1), glm::vec3(-7, -1, 18), glm::vec3(0.0, 0.0, 1.0), 0));
-	objects.push_back(Object("Objects/teapot.obj", "Textures/yellowbrk.bmp", glm::vec3(1, 1, 1), glm::vec3(-7, -1, 13), glm::vec3(0.0, 0.0, 1.0), 0));
+	objects.push_back(Object("Objects/teapot.obj", "Textures/yellowbrk.bmp", glm::vec3(1, 1, 1), glm::vec3(-7, -1, 18), glm::vec3(0.0, 0.0, 1.0), 0, new RotateCupAnimator()));
+	objects.push_back(Object("Objects/teapot.obj", "Textures/yellowbrk.bmp", glm::vec3(1, 1, 1), glm::vec3(-7, -1, 13), glm::vec3(0.0, 0.0, 1.0), 0, new RotateCupAnimator()));
 
 	//houses
-	
+
 
 	//1
 	// path
@@ -170,6 +177,8 @@ void createObjects() {
 	objects.push_back(Object("Objects/box.obj", "Textures/brick.bmp", glm::vec3(8.0, 6.0, 6.0), glm::vec3(-15, -1, 1), glm::vec3(0.0, 0.0, 1.0), 0));
 	//roof
 	objects.push_back(Object("Objects/roof.obj", "Textures/roof2.bmp", glm::vec3(0.55, 1.0, 1.8), glm::vec3(-15, 3, -1.45), glm::vec3(0.0, 2, 0.0), 29.85));
+	//door
+	objects.push_back(Object("Objects/door.obj", "Textures/bluewood.bmp", glm::vec3(1, 0.7, 0.7), glm::vec3(-11.05, -1, 1), glm::vec3(0.0, 2, 0.0), 0));
 
 
 	//2
@@ -183,6 +192,8 @@ void createObjects() {
 	objects.push_back(Object("Objects/roof.obj", "Textures/roof2.bmp", glm::vec3(0.55, 1.0, 1.8), glm::vec3(-15, 3, 4.45), glm::vec3(0.0, 2, 0.0), 29.85));
 	//Chimney
 	objects.push_back(Object("Objects/Chimney.obj", "Textures/brick.bmp", glm::vec3(0.5, 0.4, 0.5), glm::vec3(-15, 8, 4.45), glm::vec3(0.0, 0, 1.0), 0));
+	//door
+	objects.push_back(Object("Objects/door.obj", "Textures/bluewood.bmp", glm::vec3(1, 0.7, 0.7), glm::vec3(-11.05, -1, 4.3), glm::vec3(0.0, 2, 0.0), 0));
 
 
 	//3
@@ -194,6 +205,8 @@ void createObjects() {
 	objects.push_back(Object("Objects/box.obj", "Textures/brick.bmp", glm::vec3(8.0, 6.0, 6.0), glm::vec3(-15, -1, 13), glm::vec3(0.0, 0.0, 1.0), 0));
 	//roof
 	objects.push_back(Object("Objects/roof.obj", "Textures/roof2.bmp", glm::vec3(0.55, 1.0, 1.8), glm::vec3(-15, 3, 9.45), glm::vec3(0.0, 2, 0.0), 29.85));
+	//door
+	objects.push_back(Object("Objects/door.obj", "Textures/bluewood.bmp", glm::vec3(1, 0.7, 0.7), glm::vec3(-11.05, -1, 14.3), glm::vec3(0.0, 2, 0.0), 0));
 
 	//pillars
 	objects.push_back(Object("Objects/SimplePole.obj", "Textures/brick.bmp", glm::vec3(0.3, 0.3, 0.3), glm::vec3(-4.4, -1.2, 15), glm::vec3(0.0, 0.0, 1.0), 0));
@@ -208,6 +221,8 @@ void createObjects() {
 	objects.push_back(Object("Objects/roof.obj", "Textures/roof2.bmp", glm::vec3(0.55, 1.0, 1.8), glm::vec3(-15, 3, 14.45), glm::vec3(0.0, 2, 0.0), 29.85));
 	//Chimney
 	objects.push_back(Object("Objects/Chimney.obj", "Textures/brick.bmp", glm::vec3(0.5, 0.4, 0.5), glm::vec3(-15, 8, 14.45), glm::vec3(0.0, 0, 1.0), 0));
+	//door
+	objects.push_back(Object("Objects/door.obj", "Textures/bluewood.bmp", glm::vec3(1, 0.7, 0.7), glm::vec3(-11.05, -1, 18.3), glm::vec3(0.0, 2, 0.0), 0));
 
 
 	//5
@@ -219,6 +234,8 @@ void createObjects() {
 	objects.push_back(Object("Objects/box.obj", "Textures/brick.bmp", glm::vec3(8.0, 6.0, 6.0), glm::vec3(-15, -1, 25), glm::vec3(0.0, 0.0, 1.0), 0));
 	//roof
 	objects.push_back(Object("Objects/roof.obj", "Textures/roof2.bmp", glm::vec3(0.55, 1.0, 1.8), glm::vec3(-15, 3, 19.45), glm::vec3(0.0, 2, 0.0), 29.85));
+	//door
+	objects.push_back(Object("Objects/door.obj", "Textures/bluewood.bmp", glm::vec3(1, 0.7, 0.7), glm::vec3(-11.05, -1, 27.3), glm::vec3(0.0, 2, 0.0), 0));
 
 
 	//6
@@ -231,6 +248,8 @@ void createObjects() {
 	objects.push_back(Object("Objects/roof.obj", "Textures/roof2.bmp", glm::vec3(0.55, 1.0, 1.8), glm::vec3(-15, 3, 28.45), glm::vec3(0.0, 2, 0.0), 29.85));
 	//Chimney
 	objects.push_back(Object("Objects/Chimney.obj", "Textures/brick.bmp", glm::vec3(0.5, 0.4, 0.5), glm::vec3(-15, 8, 24.45), glm::vec3(0.0, 0, 1.0), 0));
+	//door
+	objects.push_back(Object("Objects/door.obj", "Textures/bluewood.bmp", glm::vec3(1, 0.7, 0.7), glm::vec3(-11.05, -1, 29.3), glm::vec3(0.0, 2, 0.0), 0));
 
 
 
@@ -405,7 +424,7 @@ void keyboardHandler(unsigned char key, int a, int b) {
 		//V Switch between walk and drone mode
 	case 118:
 	case 86:
-		ActiveCameraInterval = (ActiveCameraInterval + 1) % (sizeof(cameras) / sizeof(*cameras));
+		ActiveCameraInterval = (ActiveCameraInterval + 1) % cameras.size();
 		//ActiveCameraInterval = (ActiveCameraInterval + 1) % cameras.size();
 
 		if (ActiveCameraInterval == 1) {
@@ -481,6 +500,7 @@ void InitObjects() {
 void InitLight() {
 	light.position = glm::vec3(4.0, 4.0, 4.0);
 
+	
 	objects[0].material.ambient_color = glm::vec3(0.2, 0.2, 0.1);
 	objects[0].material.diffuse_color = glm::vec3(0.5, 0.5, 0.3);
 	objects[0].material.specular = glm::vec3(0.7, 0.7, 0.7);
@@ -491,6 +511,37 @@ void InitLight() {
 	objects[1].material.diffuse_color = glm::vec3(1.0, 1.0, 1.0);
 	objects[1].material.specular = glm::vec3(0.7, 0.7, 0.7);
 	objects[1].material.power = 1024.0f;
+
+	objects[10].material.ambient_color = glm::vec3(0, 0.2, 1);
+	objects[10].material.diffuse_color = glm::vec3(1.0, 1.0, 1.0);
+	objects[10].material.specular = glm::vec3(0.7, 0.7, 0.7);
+	objects[10].material.power = 100.0f;
+
+	objects[11].material.ambient_color = glm::vec3(0, 0.2, 1);
+	objects[11].material.diffuse_color = glm::vec3(1.0, 1.0, 1.0);
+	objects[11].material.specular = glm::vec3(0.7, 0.7, 0.7);
+	objects[11].material.power = 100.0f;
+
+	objects[20].material.ambient_color = glm::vec3(0.1, 0.2, 0);
+	objects[20].material.diffuse_color = glm::vec3(0.2, 0.3, 0.3);
+	objects[20].material.specular = glm::vec3(0.2, 0.3, 0.2);
+	objects[20].material.power = 987.0f;
+
+
+	objects[16].material.ambient_color = glm::vec3(0.2, 0.2, 0.1);
+	objects[16].material.diffuse_color = glm::vec3(1.0, 1.0, 1.0);
+	objects[16].material.specular = glm::vec3(0.7, 0.7, 0.7);
+	objects[16].material.power = 765.0f;
+
+	objects[7].material.ambient_color = glm::vec3(0, 0.2, 1);
+	objects[7].material.diffuse_color = glm::vec3(1.0, 1.0, 1.0);
+	objects[7].material.specular = glm::vec3(0.7, 0.7, 0.7);
+	objects[7].material.power = 430.0f;
+
+	objects[18].material.ambient_color = glm::vec3(0, 0.2, 1);
+	objects[18].material.diffuse_color = glm::vec3(1.0, 1.0, 1.0);
+	objects[18].material.specular = glm::vec3(0.7, 0.7, 0.7);
+	objects[18].material.power = 300.0f;
 }
 
 // Main object

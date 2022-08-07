@@ -10,6 +10,7 @@ class Camera
 private:
 	float speed = 0.1;
 	float rotspeed = 0.003;
+	float keyrotspeed = 0.3;
 	float lastX = 610;
 	float lastY = 300;
 	bool firstMouse = true;

@@ -15,11 +15,29 @@ Camera::Camera(const int WIDTH, const int HEIGHT) {
 		glm::radians(45.0f),
 		1.0f * WIDTH / HEIGHT, 0.1f,
 		200.0f);
+	translateX = -5;
+	translateY = -5;
+	translateZ = 9;
+	standardView = glm::translate(standardView, glm::vec3(translateX, translateY, translateZ));
+
+	rotateX = 0.21439f;
+	rotateY = -2.439f;
+	rotateZ = 0.0618128f;
+
 }
 
 Camera::Camera(glm::mat4 view, glm::mat4 projection) {
 	this->standardView = view;
 	this->standardProjection = projection;
+
+	translateX = -3.2;
+	translateY = 0;
+	translateZ = 6.9;
+	standardView = glm::translate(standardView, glm::vec3(translateX, translateY, translateZ));
+
+	rotateX = 0;
+	rotateY = -2.6;
+	rotateZ = 0;
 }
 
 // Move player forward based upon the rotation sin is used for x and cos for z movement
@@ -48,27 +66,27 @@ void Camera::Right() {
 void Camera::LookDown() {
 	if (rotateX > 6.2f && rotateX < 6.4f)
 		rotateX -= 6.2f;
-	rotateX += rotspeed;
+	rotateX += keyrotspeed;
 }
 // change x rotation to look up
 void Camera::LookUp() {
 	if (rotateX > -0.1f && rotateX < 0.1f)
 		rotateX += 6.3f;
-	rotateX -= rotspeed;
+	rotateX -= keyrotspeed;
 }
 // change y rotation to look left
 void Camera::LookLeft() {
 	//Change 
 	if (rotateY > -0.1f && rotateY < 0.1f)
 		rotateY += 6.2f;
-	rotateY -= rotspeed;
+	rotateY -= keyrotspeed;
 	std::cout << rotateY << std::endl;
 }
 // change y rotation to look right
 void Camera::LookRight() {
 	if (rotateY > 6.2f && rotateY < 6.4f)
 		rotateY -= 6.3f;
-	rotateY += rotspeed;
+	rotateY += keyrotspeed;
 }
 // translate y so player cam goes up
 void Camera::Up() {
@@ -123,4 +141,6 @@ void Camera::Update() {
 	projection = glm::rotate(standardProjection, rotateX, glm::vec3(1.0, 0.0, 0.0));
 	projection = glm::rotate(projection, rotateY, glm::vec3(0.0, 1.0, 0.0));
 	projection = glm::rotate(projection, rotateZ, glm::vec3(0.0, 0.0, 1.0));
+
+	std::cout << "COORDS:::::::" << "\n X" << translateX << "Y" << translateY << "Z" << translateZ << std::endl;
 }

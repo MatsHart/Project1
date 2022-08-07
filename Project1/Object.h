@@ -40,6 +40,7 @@ public:
 	Object();
 	// constructor for object with bmp and obj file
 	Object(const char*, const char*, glm::vec3 scale, glm::vec3 translate, glm::vec3 rotate, float angle);
+	Object(const char*, const char*, glm::vec3 scale, glm::vec3 translate, glm::vec3 rotate, float angle, Animator* animator);
 	//constructor with only a obj file
 	Object(const char* filePath2, glm::vec3 scale, glm::vec3 translate, glm::vec3 rotate, float angle);
 

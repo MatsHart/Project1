@@ -36,9 +36,6 @@
     <ClCompile Include="glsl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="objloader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -46,9 +43,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Object.cpp">
-      <Filter>Source Files\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="Car.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Animator.cpp">
@@ -60,12 +54,21 @@
     <ClCompile Include="BodyAnimator.cpp">
       <Filter>Source Files\Animations</Filter>
     </ClCompile>
+    <ClCompile Include="InverseWheelAnimator.cpp">
+      <Filter>Source Files\Animations</Filter>
+    </ClCompile>
+    <ClCompile Include="RotateCupAnimator.cpp">
+      <Filter>Source Files\Animations</Filter>
+    </ClCompile>
+    <ClCompile Include="objloader.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="LeaveAnimator.cpp">
+      <Filter>Source Files\Animations</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="glsl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\..\..\Desktop\objloader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="texture.h">
@@ -77,9 +80,6 @@
     <ClInclude Include="Object.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="Car.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Animator.h">
       <Filter>Header Files\Animations</Filter>
     </ClInclude>
@@ -87,6 +87,18 @@
       <Filter>Header Files\Animations</Filter>
     </ClInclude>
     <ClInclude Include="BodyAnimator.h">
+      <Filter>Header Files\Animations</Filter>
+    </ClInclude>
+    <ClInclude Include="InverseWheelAnimator.h">
+      <Filter>Header Files\Animations</Filter>
+    </ClInclude>
+    <ClInclude Include="RotateCupAnimator.h">
+      <Filter>Header Files\Animations</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\..\Desktop\objloader.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="LeaveAnimator.h">
       <Filter>Header Files\Animations</Filter>
     </ClInclude>
   </ItemGroup>
