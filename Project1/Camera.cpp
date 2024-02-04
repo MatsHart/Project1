@@ -123,8 +123,8 @@ void Camera::mouseMovemnt(int x, int y) {
 
 	//Add yaw offset to the rotate y 
 	//Change rotx and rotz based upon the roty location
-	rotateZ += pitch * sin(rotateY);
-	rotateX += pitch * cos(rotateY);
+	//rotateZ += pitch * sin(rotateY);
+	rotateX += pitch;
 	rotateY += yaw;
 	if (rotateY > 6.2f && rotateY < 6.4f)
 		rotateY -= 6.3f;
@@ -140,6 +140,5 @@ void Camera::Update() {
 	// Use normal projection so rotY data is not lost
 	projection = glm::rotate(standardProjection, rotateX, glm::vec3(1.0, 0.0, 0.0));
 	projection = glm::rotate(projection, rotateY, glm::vec3(0.0, 1.0, 0.0));
-	projection = glm::rotate(projection, rotateZ, glm::vec3(0.0, 0.0, 1.0));
 
 }

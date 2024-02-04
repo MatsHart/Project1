@@ -43,10 +43,10 @@ void Object::Render(glm::mat4 view, GLuint uniform_mv) {
 
 	glBindTexture(GL_TEXTURE_2D, texture_id);
 
-		// Send vao
-		glBindVertexArray(vao);
-		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-		glBindVertexArray(0);
+	// Send vao
+	glBindVertexArray(vao);
+	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+	glBindVertexArray(0);
 }
 
 // First delete the old animator to then add the new animator

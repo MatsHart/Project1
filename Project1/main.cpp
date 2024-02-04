@@ -10,6 +10,8 @@
 #include "glsl.h"
 #include "objloader.h"
 #include "texture.h"
+#include "CubeGenerator.h"
+
 
 #include "Object.h"
 #include "WheelAnimator.h"
@@ -17,8 +19,6 @@
 #include "RotateCupAnimator.h"
 #include "LeaveAnimator.h"
 #include "BodyAnimator.h"
-
-#define objectsSize sizeof(objects) / sizeof(*objects);
 
 using namespace std;
 
@@ -105,7 +105,11 @@ void Render() {
 
 	// For every object call the render method
 	for (int i = 0; i < objects.size(); i++) {
+
 		objects[i].Render(cameras[ActiveCameraInterval].view, uniform_mv);
+
+
+	
 	}
 	glutSwapBuffers();
 }
@@ -127,7 +131,7 @@ void Render(int n) {
 //--------------------------------------------------------------------------------
 
 void createObjects() {
-	//car body
+	////car body
 	objects.push_back(Object("Objects/carNoTires.obj", "Textures/metal.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, 0, 0), glm::vec3(0.0, 1.0, 0.0), 0, new BodyAnimator()));
 
 	//tire tire Left back 
@@ -364,6 +368,21 @@ void InitBuffers() {
 
 }
 
+void updateBuffers() {
+
+	GLuint uniform_proj = glGetUniformLocation(program_id, "projection");
+	for (int i = 0; i < objects.size(); i++) {
+
+		objects[i].mv = cameras[ActiveCameraInterval].view * objects[i].model * cameras[ActiveCameraInterval].projection;
+
+		// Send mvp
+		glUseProgram(program_id);
+		glUniformMatrix4fv(uniform_mv, 1, GL_FALSE, glm::value_ptr(objects[i].mv));
+		glUniformMatrix4fv(uniform_proj, 1, GL_FALSE, glm::value_ptr(cameras[ActiveCameraInterval].projection));
+
+	}
+}
+
 //------------------------------------------------------------
 // Add all keyboard handlers
 //------------------------------------------------------------
@@ -426,29 +445,27 @@ void keyboardHandler(unsigned char key, int a, int b) {
 	case 118:
 	case 86:
 		ActiveCameraInterval = (ActiveCameraInterval + 1) % cameras.size();
-		//ActiveCameraInterval = (ActiveCameraInterval + 1) % cameras.size();
-
 		if (ActiveCameraInterval == 1) {
 			cameras[1] = Camera();
 		}
 		break;
-	case 32:
-		objects[0].model= objects[0].animator->Animate_Execute(objects[0].model);
-		break;
 	}
 	InitMatrices();
-	InitBuffers();
-	Render();
+	updateBuffers();
 }
-
+int c = 0;
 //------------------------------------------------------------
 // call mousemovent
 //------------------------------------------------------------
 void mouseHandler(int mx, int my) {
 	cameras[ActiveCameraInterval].mouseMovemnt(mx, my);
-	InitMatrices();
-	InitBuffers();
-	Render();
+	// prevents being updated to fast.
+	if (c > 10){
+		InitMatrices();
+		updateBuffers();
+		c = 0;
+	}
+	c++;
 }
 
 //------------------------------------------------------------
@@ -503,49 +520,6 @@ void InitObjects() {
 
 void InitLight() {
 	light.position = glm::vec3(4.0, 4.0, 4.0);
-
-
-	objects[0].material.ambient_color = glm::vec3(0.2, 0.2, 0.1);
-	objects[0].material.diffuse_color = glm::vec3(0.5, 0.5, 0.3);
-	objects[0].material.specular = glm::vec3(0.7, 0.7, 0.7);
-	objects[0].material.power = 1024.0f;
-
-
-	objects[1].material.ambient_color = glm::vec3(0.2, 0.2, 0.1);
-	objects[1].material.diffuse_color = glm::vec3(1.0, 1.0, 1.0);
-	objects[1].material.specular = glm::vec3(0.7, 0.7, 0.7);
-	objects[1].material.power = 1024.0f;
-
-	objects[10].material.ambient_color = glm::vec3(0, 0.2, 1);
-	objects[10].material.diffuse_color = glm::vec3(1.0, 1.0, 1.0);
-	objects[10].material.specular = glm::vec3(0.7, 0.7, 0.7);
-	objects[10].material.power = 100.0f;
-
-	objects[11].material.ambient_color = glm::vec3(0, 0.2, 1);
-	objects[11].material.diffuse_color = glm::vec3(1.0, 1.0, 1.0);
-	objects[11].material.specular = glm::vec3(0.7, 0.7, 0.7);
-	objects[11].material.power = 100.0f;
-
-	objects[20].material.ambient_color = glm::vec3(0.1, 0.2, 0);
-	objects[20].material.diffuse_color = glm::vec3(0.2, 0.3, 0.3);
-	objects[20].material.specular = glm::vec3(0.2, 0.3, 0.2);
-	objects[20].material.power = 987.0f;
-
-
-	objects[16].material.ambient_color = glm::vec3(0.2, 0.2, 0.1);
-	objects[16].material.diffuse_color = glm::vec3(1.0, 1.0, 1.0);
-	objects[16].material.specular = glm::vec3(0.7, 0.7, 0.7);
-	objects[16].material.power = 765.0f;
-
-	objects[7].material.ambient_color = glm::vec3(0, 0.2, 1);
-	objects[7].material.diffuse_color = glm::vec3(1.0, 1.0, 1.0);
-	objects[7].material.specular = glm::vec3(0.7, 0.7, 0.7);
-	objects[7].material.power = 430.0f;
-
-	objects[18].material.ambient_color = glm::vec3(0, 0.2, 1);
-	objects[18].material.diffuse_color = glm::vec3(1.0, 1.0, 1.0);
-	objects[18].material.specular = glm::vec3(0.7, 0.7, 0.7);
-	objects[18].material.power = 300.0f;
 }
 
 // Main object

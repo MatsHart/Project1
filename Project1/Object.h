@@ -29,6 +29,7 @@ public:
 	const char* bmpPath;
 	Material material = Material();
 	Animator* animator = new Animator();
+	vector<GLuint> indices;
 	vector<glm::vec3> normals;
 	vector<glm::vec3> vertices;
 	vector<glm::vec2> uvs;

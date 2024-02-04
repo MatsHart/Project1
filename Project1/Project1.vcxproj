@@ -147,6 +147,7 @@
     <ClInclude Include="BodyAnimator.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="glsl.h" />
+    <ClInclude Include="CubeGenerator.h" />
     <ClInclude Include="InverseWheelAnimator.h" />
     <ClInclude Include="LeaveAnimator.h" />
     <ClInclude Include="Object.h" />

@@ -101,6 +101,9 @@
     <ClInclude Include="LeaveAnimator.h">
       <Filter>Header Files\Animations</Filter>
     </ClInclude>
+    <ClInclude Include="CubeGenerator.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="fragmentshader.fsh" />

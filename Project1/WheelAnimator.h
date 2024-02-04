@@ -3,7 +3,7 @@
 class WheelAnimator : public Animator
 {
 private: 	
-	const int rotate = 2.0f;
+	const int rotate = -2.0f;
 	int count = 0;
 public:
 	//Animator function from Animator.h
