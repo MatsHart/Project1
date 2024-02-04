@@ -9,6 +9,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Animator.h"
+#include "PrimitiveMeshes.h"
 
 using namespace std;
 
@@ -26,12 +27,14 @@ class Object
 public:
 	// All needed variables to create a object
 	const char* filePath;
+	bool isPrimitive = false;
 	const char* bmpPath;
 	Material material = Material();
 	Animator* animator = new Animator();
 	vector<GLuint> indices;
 	vector<glm::vec3> normals;
 	vector<glm::vec3> vertices;
+	vector<glm::vec3> colors;
 	vector<glm::vec2> uvs;
 	glm::mat4 model;
 	glm::mat4 mv;
@@ -45,6 +48,8 @@ public:
 	//constructor with only a obj file
 	Object(const char* filePath2, glm::vec3 scale, glm::vec3 translate, glm::vec3 rotate, float angle);
 
+	// Primitive meshes
+	Object(const PrimitiveMesh& primitiveMesh, glm::vec3 scale, glm::vec3 translate, glm::vec3 rotate, float angle);
 	~Object() {
 		
 		//animator->~Animator();

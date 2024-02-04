@@ -11,6 +11,7 @@
 #include "objloader.h"
 #include "texture.h"
 #include "CubeGenerator.h"
+#include "PrimitiveMeshes.h"
 
 
 #include "Object.h"
@@ -59,6 +60,13 @@ LightSource light;
 
 vector<Object> objects;
 
+// Primitive meshes
+CubeMesh cubeMesh;
+PyramidMesh pyramidMesh;
+SphereMesh sphereMesh;
+CylinderMesh cylinderMesh;
+ConeMesh coneMesh;
+DonutMesh donutMesh;
 
 vector<Camera> cameras;
 //Camera cameras[2];
@@ -68,7 +76,6 @@ int ActiveCameraInterval = 0;
 //--------------------------------------------------------------------------------
 // Initialize camera
 //--------------------------------------------------------------------------------
-
 void InitCameras() {
 
 	//Walking mode camera
@@ -94,7 +101,6 @@ void InitCameras() {
 //--------------------------------------------------------------------------------
 // Rendering
 //--------------------------------------------------------------------------------
-
 void Render() {
 	cameras[ActiveCameraInterval].Update();
 	glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -105,22 +111,15 @@ void Render() {
 
 	// For every object call the render method
 	for (int i = 0; i < objects.size(); i++) {
-
 		objects[i].Render(cameras[ActiveCameraInterval].view, uniform_mv);
-
-
-	
 	}
 	glutSwapBuffers();
 }
-
-
 
 //------------------------------------------------------------
 // void Render(int n)
 // Render method that is called by the timer function
 //------------------------------------------------------------
-
 void Render(int n) {
 	Render();
 	glutTimerFunc(DELTA_TIME, Render, 0);
@@ -128,8 +127,13 @@ void Render(int n) {
 
 //--------------------------------------------------------------------------------
 // Create objects
+// 
+// Want to change scale, transform or rotation
+// 
+// First vec3 is Scale
+// Second vec3 is Transform
+// Third vec3 is Rotate
 //--------------------------------------------------------------------------------
-
 void createObjects() {
 	////car body
 	objects.push_back(Object("Objects/carNoTires.obj", "Textures/metal.bmp", glm::vec3(1.0, 1.0, 1.0), glm::vec3(0, 0, 0), glm::vec3(0.0, 1.0, 0.0), 0, new BodyAnimator()));
@@ -256,15 +260,16 @@ void createObjects() {
 	//door
 	objects.push_back(Object("Objects/door.obj", "Textures/bluewood.bmp", glm::vec3(1, 0.7, 0.7), glm::vec3(-11.05, -1, 29.3), glm::vec3(0.0, 2, 0.0), 0));
 
-
-
+	// Primitive meshes Options: cubeMesh, pyramidMesh, sphereMesh, cylinderMesh, coneMesh, donutMesh
+	objects.push_back(Object(cubeMesh, glm::vec3(1.0, 1.0, 1.0), glm::vec3(-5, -1,29), glm::vec3(0.0, 1.0, 0.0), 0));
+	objects.push_back(Object(pyramidMesh, glm::vec3(1.0, 1.0, 1.0), glm::vec3(-5, -1, 31), glm::vec3(0.0, 1.0, 0.0), 0));
+	objects.push_back(Object(sphereMesh, glm::vec3(1.0, 1.0, 1.0), glm::vec3(-5, 0, 33), glm::vec3(0.0, 1.0, 0.0), 0));
 
 }
 
 //--------------------------------------------------------------------------------
 // Init Matrices
 //--------------------------------------------------------------------------------
-
 void InitMatrices() {
 
 	cameras[ActiveCameraInterval].Update();
@@ -278,76 +283,61 @@ void InitMatrices() {
 // void InitBuffers()
 // Allocates and fills buffers
 //------------------------------------------------------------
-
 void InitBuffers() {
-	GLuint position_id, color_id;
-	GLuint vbo_vertices, vbo_colors;
-	GLuint vbo_normals, vbo_uvs;
+	GLuint position_id, normal_id, uv_id;
+	GLuint vbo_vertices, vbo_normals, vbo_uvs, ebo_indices;
 
-	GLuint uv_id = glGetAttribLocation(program_id, "uv");
-
-	// Get vertex attributes
+	// Retrieve attribute locations
 	position_id = glGetAttribLocation(program_id, "position");
-	color_id = glGetAttribLocation(program_id, "colour");
-	GLuint normal_id = glGetAttribLocation(program_id, "normal");
+	normal_id = glGetAttribLocation(program_id, "normal");
+	uv_id = glGetAttribLocation(program_id, "uv");
 
-	// Make uniform vars
+	// Retrieve uniform locations
 	uniform_mv = glGetUniformLocation(program_id, "mv");
 	GLuint uniform_proj = glGetUniformLocation(program_id, "projection");
 	uniform_light_pos = glGetUniformLocation(program_id, "light_pos");
-	uniform_material_ambient = glGetUniformLocation(program_id,
-		"mat_ambient");
-	uniform_material_diffuse = glGetUniformLocation(program_id,
-		"mat_diffuse");
-	uniform_material_power = glGetUniformLocation(program_id,
-		"mat_power");
+	uniform_material_ambient = glGetUniformLocation(program_id, "mat_ambient");
+	uniform_material_diffuse = glGetUniformLocation(program_id, "mat_diffuse");
+	uniform_material_power = glGetUniformLocation(program_id, "mat_power");
+	uniform_material_specular = glGetUniformLocation(program_id, "mat_specular");
 
 	for (int i = 0; i < objects.size(); i++) {
-
-		glGenBuffers(1, &vbo_normals);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo_normals);
-		glBufferData(GL_ARRAY_BUFFER,
-			objects[i].normals.size() * sizeof(glm::vec3),
-			&objects[i].normals[0], GL_STATIC_DRAW);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-		glGenBuffers(1, &vbo_vertices);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo_vertices);
-		glBufferData(GL_ARRAY_BUFFER,
-			objects[i].vertices.size() * sizeof(glm::vec3), &objects[i].vertices[0],
-			GL_STATIC_DRAW);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-		glGenBuffers(1, &vbo_uvs);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo_uvs);
-		glBufferData(GL_ARRAY_BUFFER, objects[i].uvs.size() * sizeof(glm::vec2),
-			&objects[i].uvs[0], GL_STATIC_DRAW);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-		// Allocate memory for vao
 		glGenVertexArrays(1, &objects[i].vao);
-
-		// Bind to vao
 		glBindVertexArray(objects[i].vao);
 
-		// Bind vertices to vao
+		// Vertices
+		glGenBuffers(1, &vbo_vertices);
 		glBindBuffer(GL_ARRAY_BUFFER, vbo_vertices);
-		glVertexAttribPointer(position_id, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glBufferData(GL_ARRAY_BUFFER, objects[i].vertices.size() * sizeof(glm::vec3), objects[i].vertices.data(), GL_STATIC_DRAW);
+		glVertexAttribPointer(position_id, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 		glEnableVertexAttribArray(position_id);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-		glBindBuffer(GL_ARRAY_BUFFER, vbo_normals);
-		glVertexAttribPointer(normal_id, 3, GL_FLOAT, GL_FALSE, 0, 0);
-		glEnableVertexAttribArray(normal_id);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		if (!objects[i].isPrimitive || objects[i].normals.size() > 0) {
+			// Normals
+			glGenBuffers(1, &vbo_normals);
+			glBindBuffer(GL_ARRAY_BUFFER, vbo_normals);
+			glBufferData(GL_ARRAY_BUFFER, objects[i].normals.size() * sizeof(glm::vec3), objects[i].normals.data(), GL_STATIC_DRAW);
+			glVertexAttribPointer(normal_id, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+			glEnableVertexAttribArray(normal_id);
+		}
 
-		glBindBuffer(GL_ARRAY_BUFFER, vbo_uvs);
-		glVertexAttribPointer(uv_id, 2, GL_FLOAT, GL_FALSE, 0, 0);
-		glEnableVertexAttribArray(uv_id);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		if (!objects[i].isPrimitive || objects[i].uvs.size() > 0) {
+			// UVs
+			glGenBuffers(1, &vbo_uvs);
+			glBindBuffer(GL_ARRAY_BUFFER, vbo_uvs);
+			glBufferData(GL_ARRAY_BUFFER, objects[i].uvs.size() * sizeof(glm::vec2), objects[i].uvs.data(), GL_STATIC_DRAW);
+			glVertexAttribPointer(uv_id, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+			glEnableVertexAttribArray(uv_id);
+		}
 
-		// Stop bind to vao
-		glBindVertexArray(0);
+		if (objects[i].isPrimitive && !objects[i].indices.empty()) {
+			// Indices
+			glGenBuffers(1, &ebo_indices);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_indices);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, objects[i].indices.size() * sizeof(GLuint), objects[i].indices.data(), GL_STATIC_DRAW);
+		}
+
+		glBindVertexArray(0); // Unbind VAO
 
 		glUniform3fv(uniform_light_pos, 1, glm::value_ptr(light.position));
 		glUniform3fv(uniform_material_ambient, 1, glm::value_ptr(objects[i].material.ambient_color));
@@ -363,10 +353,14 @@ void InitBuffers() {
 		glUniformMatrix4fv(uniform_mv, 1, GL_FALSE, glm::value_ptr(objects[i].mv));
 		glUniformMatrix4fv(uniform_proj, 1, GL_FALSE, glm::value_ptr(cameras[ActiveCameraInterval].projection));
 
+		// No need to bind material properties here; they should be bound when drawing each object.
 	}
-
-
 }
+
+
+
+
+
 
 void updateBuffers() {
 
@@ -472,7 +466,6 @@ void mouseHandler(int mx, int my) {
 // void InitGlutGlew(int argc, char **argv)
 // Initializes Glut and Glew
 //------------------------------------------------------------
-
 void InitGlutGlew(int argc, char** argv) {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
@@ -490,7 +483,6 @@ void InitGlutGlew(int argc, char** argv) {
 // void InitShaders()
 // Initializes the fragmentshader and vertexshader
 //------------------------------------------------------------
-
 void InitShaders() {
 	char* vertexshader = glsl::readFile(vertexshader_name);
 	GLuint vsh_id = glsl::makeVertexShader(vertexshader);
@@ -504,26 +496,40 @@ void InitShaders() {
 //------------------------------------------------------------
 // Init objects
 //------------------------------------------------------------
-
 void InitObjects() {
+
 	for (int i = 0; i < objects.size(); i++) {
-		if (objects[i].filePath != nullptr)
-			bool res = loadOBJ(objects[i].filePath, objects[i].vertices, objects[i].uvs, objects[i].normals);
-		if (objects[i].bmpPath != nullptr)
-			objects[i].texture_id = loadBMP(objects[i].bmpPath);
+		try {
+			if (objects[i].filePath != nullptr) {
+				bool res = loadOBJ(objects[i].filePath, objects[i].vertices, objects[i].uvs, objects[i].normals);
+				if (!res) {
+					// Handle loading failure for the OBJ file here (e.g., log an error).
+				}
+			}
+
+			if (objects[i].bmpPath != nullptr) {
+				objects[i].texture_id = loadBMP(objects[i].bmpPath);
+				if (objects[i].texture_id == -1) {
+					// Handle loading failure for the BMP texture here (e.g., log an error).
+				}
+			}
+		}
+		catch (const std::exception& e) {
+			// Handle any exceptions thrown during resource loading (e.g., log the exception message).
+		}
 	}
 }
 
 //------------------------------------------------------------
 // Init lights
 //------------------------------------------------------------
-
 void InitLight() {
 	light.position = glm::vec3(4.0, 4.0, 4.0);
 }
 
 // Main object
 int main(int argc, char** argv) {
+
 	InitGlutGlew(argc, argv);
 	createObjects();
 	InitCameras();

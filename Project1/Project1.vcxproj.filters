@@ -66,6 +66,9 @@
     <ClCompile Include="LeaveAnimator.cpp">
       <Filter>Source Files\Animations</Filter>
     </ClCompile>
+    <ClCompile Include="PrimitiveObject.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="glsl.h">
@@ -102,6 +105,12 @@
       <Filter>Header Files\Animations</Filter>
     </ClInclude>
     <ClInclude Include="CubeGenerator.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="PrimitiveObject.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="PrimitiveMeshes.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
   </ItemGroup>

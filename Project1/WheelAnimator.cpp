@@ -1,6 +1,10 @@
 #include "WheelAnimator.h"
 
-//Animates the car wheel to move in an direction
+// -----------------------------------------------------------------
+// Animates the car wheel to move in an direction
+// 
+// First rotates the wheel back to original position to be able to move it forwards. Then rotate it further then it was.
+// -----------------------------------------------------------------
 glm::mat4 WheelAnimator::Animate(glm::mat4 model) {
 	if (count >= 500) {
 		model = glm::rotate(model, glm::radians(((count - 1.0f) * rotate)), glm::vec3(1, 0, 0));
